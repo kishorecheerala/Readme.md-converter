@@ -4,6 +4,11 @@ import './globals.css';
 export const metadata: Metadata = {
   title: 'DocuCraft Pro - README.md & Markdown to PDF/DOCX Converter',
   description: 'Modern, high-performance Markdown to PDF, DOCX, and HTML document studio.',
+  icons: {
+    icon: '/favicon.svg',
+    shortcut: '/favicon.svg',
+    apple: '/apple-icon',
+  },
 };
 
 export default function RootLayout({
