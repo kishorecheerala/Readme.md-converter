@@ -23,7 +23,7 @@ export function buildStandaloneHtml(options: HTMLExportOptions): string {
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Georgia&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Georgia&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Noto+Color+Emoji&family=Noto+Sans+Mono:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
   
   <!-- KaTeX CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.css">
@@ -33,9 +33,9 @@ export function buildStandaloneHtml(options: HTMLExportOptions): string {
 
   <style>
     :root {
-      --font-body: ${theme.styles.fontFamily};
-      --font-heading: ${theme.styles.headingFontFamily || theme.styles.fontFamily};
-      --font-code: ${theme.styles.codeFontFamily || 'monospace'};
+      --font-body: ${theme.styles.fontFamily}, "Noto Color Emoji", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+      --font-heading: ${theme.styles.headingFontFamily || theme.styles.fontFamily}, "Noto Color Emoji", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+      --font-code: ${theme.styles.codeFontFamily || "'JetBrains Mono'"}, "Noto Sans Mono", "Fira Code", monospace, "Noto Color Emoji", "Apple Color Emoji", "Segoe UI Emoji";
       --font-size: ${theme.styles.fontSize};
       --line-height: ${theme.styles.lineHeight};
       --bg-color: ${theme.styles.backgroundColor};
@@ -102,32 +102,41 @@ export function buildStandaloneHtml(options: HTMLExportOptions): string {
       font-family: var(--font-code);
       background-color: var(--code-bg);
       color: var(--code-text);
-      padding: 0.25em 0.45em;
-      border-radius: 6px;
+      padding: 0.2em 0.4em;
+      border-radius: 5px;
       font-size: 0.88em;
       border: 1px solid var(--border-color);
       word-break: break-word;
     }
 
     pre {
+      font-family: var(--font-code);
       background-color: var(--code-bg);
-      padding: 1.25em;
+      padding: 1.1em 1.25em;
       border-radius: 10px;
       overflow-x: auto;
       border: 1px solid var(--border-color);
-      white-space: pre-wrap;
-      word-break: break-word;
-      word-wrap: break-word;
+      white-space: pre !important;
+      word-break: normal !important;
+      word-wrap: normal !important;
+      font-size: 0.84em;
+      line-height: 1.38;
       margin: 1.5em 0;
       box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+      font-variant-ligatures: none;
+      letter-spacing: 0px;
     }
 
     pre code {
+      font-family: inherit;
       background: none;
       border: none;
       padding: 0;
-      white-space: pre-wrap;
-      word-break: break-word;
+      white-space: pre !important;
+      word-break: normal !important;
+      word-wrap: normal !important;
+      font-size: inherit;
+      line-height: inherit;
     }
 
     blockquote {

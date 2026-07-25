@@ -211,7 +211,7 @@ export default function Home() {
     }
 
     if (format === 'pdf') {
-      setIsPDFModalOpen(true);
+      handleDirectPDFDownload();
       return;
     }
 
