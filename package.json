@@ -10,6 +10,7 @@
     "test": "jest --passWithNoTests"
   },
   "dependencies": {
+    "@sparticuz/chromium": "^149.0.0",
     "clsx": "^2.1.1",
     "docx": "^9.1.0",
     "framer-motion": "^11.15.0",
@@ -21,6 +22,7 @@
     "mermaid": "^11.4.1",
     "next": "^15.1.7",
     "puppeteer": "^25.3.0",
+    "puppeteer-core": "^25.3.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "rehype-highlight": "^7.0.0",

@@ -2,8 +2,11 @@ import { THEMES } from '@/lib/constants/themes';
 import { buildStandaloneHtml } from '@/lib/export/html';
 import { parseMarkdownToHtml } from '@/lib/markdown/parser';
 import { ThemeId } from '@/types';
+import chromium from '@sparticuz/chromium';
 import { NextRequest, NextResponse } from 'next/server';
-import puppeteer from 'puppeteer';
+import puppeteer from 'puppeteer-core';
+
+export const maxDuration = 60; // 60s Vercel serverless timeout limit
 
 export async function POST(req: NextRequest) {
   try {
@@ -50,15 +53,22 @@ export async function POST(req: NextRequest) {
       `,
     });
 
-    // 3. Launch Headless Chromium Engine (Stirling-PDF style)
+    // 3. Launch Vercel-compatible Chromium Engine
+    const isVercel = process.env.VERCEL === '1' || process.env.NODE_ENV === 'production';
+    
+    const executablePath = isVercel
+      ? await chromium.executablePath()
+      : (process.platform === 'win32'
+          ? 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe'
+          : process.platform === 'darwin'
+          ? '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
+          : '/usr/bin/google-chrome');
+
     const browser = await puppeteer.launch({
+      args: isVercel ? chromium.args : ['--no-sandbox', '--disable-setuid-sandbox'],
+      defaultViewport: { width: 1200, height: 800 },
+      executablePath,
       headless: true,
-      args: [
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-        '--disable-dev-shm-usage',
-        '--font-render-hinting=none',
-      ],
     });
 
     const page = await browser.newPage();
