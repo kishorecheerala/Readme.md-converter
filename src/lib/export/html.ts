@@ -55,6 +55,11 @@ export function buildStandaloneHtml(options: HTMLExportOptions): string {
       box-sizing: border-box;
     }
 
+    code::before, code::after {
+      content: "" !important;
+      display: none !important;
+    }
+
     body {
       font-family: var(--font-body);
       font-size: var(--font-size);

@@ -223,6 +223,14 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({
               #pdf-render-target * {
                 box-sizing: border-box;
               }
+              /* Strip Tailwind typography auto-injected backticks around code tags */
+              .document-render-content code::before,
+              .document-render-content code::after,
+              .prose code::before,
+              .prose code::after {
+                content: "" !important;
+                display: none !important;
+              }
               .document-render-content {
                 font-family: ${theme.styles.fontFamily};
                 color: ${theme.styles.textColor} !important;
@@ -315,7 +323,7 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({
                 font-family: ${theme.styles.codeFontFamily || 'monospace'};
                 background-color: ${theme.styles.codeBg};
                 color: ${theme.styles.codeTextColor} !important;
-                padding: 0.25em 0.45em;
+                padding: 0.2em 0.4em;
                 border-radius: 6px;
                 font-size: 0.88em;
                 border: 1px solid ${theme.styles.borderColor};
