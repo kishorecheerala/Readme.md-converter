@@ -51,6 +51,10 @@ export function buildStandaloneHtml(options: HTMLExportOptions): string {
       --blockquote-border: ${theme.styles.blockquoteBorderColor};
     }
 
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
     body {
       font-family: var(--font-body);
       font-size: var(--font-size);
@@ -62,6 +66,8 @@ export function buildStandaloneHtml(options: HTMLExportOptions): string {
       max-width: 900px;
       margin-left: auto;
       margin-right: auto;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
     }
 
     h1, h2, h3, h4, h5, h6 {
@@ -71,15 +77,16 @@ export function buildStandaloneHtml(options: HTMLExportOptions): string {
       margin-bottom: 0.5em;
       font-weight: 700;
       line-height: 1.25;
+      word-break: break-word;
     }
 
     h1 { font-size: 2.2em; border-bottom: 2px solid var(--border-color); padding-bottom: 0.3em; }
     h2 { font-size: 1.6em; border-bottom: 1px solid var(--border-color); padding-bottom: 0.3em; }
     h3 { font-size: 1.3em; }
 
-    p { margin-bottom: 1em; }
+    p { margin-bottom: 1em; word-break: break-word; }
 
-    a { color: var(--accent-color); text-decoration: none; font-weight: 500; }
+    a { color: var(--accent-color); text-decoration: none; font-weight: 500; word-break: break-all; }
     a:hover { text-decoration: underline; }
 
     code {
@@ -89,6 +96,7 @@ export function buildStandaloneHtml(options: HTMLExportOptions): string {
       padding: 0.2em 0.4em;
       border-radius: 4px;
       font-size: 0.9em;
+      word-break: break-word;
     }
 
     pre {
@@ -97,11 +105,16 @@ export function buildStandaloneHtml(options: HTMLExportOptions): string {
       border-radius: 8px;
       overflow-x: auto;
       border: 1px solid var(--border-color);
+      white-space: pre-wrap;
+      word-break: break-word;
+      word-wrap: break-word;
     }
 
     pre code {
       background: none;
       padding: 0;
+      white-space: pre-wrap;
+      word-break: break-word;
     }
 
     blockquote {
@@ -110,18 +123,24 @@ export function buildStandaloneHtml(options: HTMLExportOptions): string {
       margin: 1em 0;
       padding: 0.8em 1.2em;
       border-radius: 0 6px 6px 0;
+      word-break: break-word;
     }
 
     table {
       width: 100%;
+      max-width: 100%;
       border-collapse: collapse;
       margin: 1.5em 0;
+      table-layout: auto;
+      word-break: break-word;
     }
 
     th, td {
       border: 1px solid var(--border-color);
       padding: 0.75em 1em;
       text-align: left;
+      word-break: break-word;
+      overflow-wrap: anywhere;
     }
 
     th {
@@ -144,13 +163,15 @@ export function buildStandaloneHtml(options: HTMLExportOptions): string {
     .mermaid {
       text-align: center;
       margin: 1.5em 0;
+      max-width: 100%;
+      overflow-x: auto;
     }
 
     ${customCss}
   </style>
 
   <!-- Mermaid.js -->
-  <script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
   <script>
     document.addEventListener("DOMContentLoaded", function() {
       mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
