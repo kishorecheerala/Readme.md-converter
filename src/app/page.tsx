@@ -7,7 +7,6 @@ import { Navbar } from '@/components/Navbar';
 import { PreviewPane } from '@/components/PreviewPane';
 import { SettingsModal } from '@/components/SettingsModal';
 import { SAMPLE_DOCUMENTS } from '@/lib/constants/samples';
-import { THEMES } from '@/lib/constants/themes';
 import { exportToPDF } from '@/lib/export/pdf';
 import {
   CoverPageConfig,
@@ -23,7 +22,8 @@ import { Loader2 } from 'lucide-react';
 import React, { useState } from 'react';
 
 export default function Home() {
-  const [markdown, setMarkdown] = useState<string>(SAMPLE_DOCUMENTS[0].content);
+  // Start with an empty canvas by default as requested by user
+  const [markdown, setMarkdown] = useState<string>('');
   const [beautifiedMd, setBeautifiedMd] = useState<string>('');
   const [themeId, setThemeId] = useState<ThemeId>('classic');
   const [pageSize, setPageSize] = useState<PageSize>('a4');
@@ -40,16 +40,15 @@ export default function Home() {
 
   // Cover page configuration
   const [coverPage, setCoverPage] = useState<CoverPageConfig>({
-    enabled: true,
-    title: 'Enterprise Core Engine Documentation',
-    subtitle: 'High-Throughput Asynchronous Microservice Framework',
-    author: 'Engineering Core Architecture Team',
-    version: 'v2.4.0',
+    enabled: false,
+    title: 'Document Title',
+    subtitle: 'Professional Document Specification',
+    author: 'Author Name',
+    version: '1.0.0',
     date: new Date().toLocaleDateString(),
-    confidentialLabel: 'INTERNAL USE ONLY',
+    confidentialLabel: 'CONFIDENTIAL',
     themeStyle: 'standard',
-    abstractText:
-      'This document provides high-level architectural specifications, mathematical guarantees, and quick start guides for the Enterprise Core Engine.',
+    abstractText: '',
   });
 
   // Header & Footer configuration
@@ -74,6 +73,38 @@ export default function Home() {
     fontSize: 72,
   });
 
+  // Clear Canvas to empty document
+  const handleClearCanvas = () => {
+    setMarkdown('');
+    setBeautifiedMd('');
+    setCoverPage((prev) => ({
+      ...prev,
+      enabled: false,
+      title: 'Document Title',
+      subtitle: '',
+      abstractText: '',
+    }));
+  };
+
+  // Upload File Handler
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const content = event.target?.result as string;
+      if (content) {
+        setMarkdown(content);
+        setCoverPage((prev) => ({
+          ...prev,
+          title: file.name.replace(/\.[^/.]+$/, ''),
+        }));
+      }
+    };
+    reader.readAsText(file);
+  };
+
   // Sample document loader
   const handleLoadSample = (sampleId: string) => {
     const found = SAMPLE_DOCUMENTS.find((s) => s.id === sampleId);
@@ -81,8 +112,9 @@ export default function Home() {
       setMarkdown(found.content);
       setCoverPage((prev) => ({
         ...prev,
+        enabled: true,
         title: found.name,
-        subtitle: `Professional Documentation Preset (${found.category})`,
+        subtitle: `Professional Preset (${found.category})`,
       }));
     }
   };
@@ -103,6 +135,12 @@ export default function Home() {
 
   // Export Dispatcher
   const handleExport = async (format: ExportFormat) => {
+    if (!markdown.trim()) {
+      setExportNotice('Document canvas is empty. Please enter or upload Markdown content first.');
+      setTimeout(() => setExportNotice(null), 3000);
+      return;
+    }
+
     setIsExporting(true);
     setExportNotice(`Preparing ${format.toUpperCase()} document export...`);
 
@@ -191,7 +229,7 @@ export default function Home() {
   };
 
   return (
-    <div className={`flex flex-col h-screen overflow-hidden ${isDarkMode ? 'dark bg-slate-950' : 'bg-slate-50'}`}>
+    <div className={`flex flex-col h-screen overflow-hidden ${isDarkMode ? 'dark bg-slate-950' : 'bg-slate-50 text-slate-900'}`}>
       {/* Top Navbar */}
       <Navbar
         themeId={themeId}
@@ -200,13 +238,15 @@ export default function Home() {
         onOpenAITools={() => setIsAIToolsOpen(true)}
         onOpenGitHubImport={() => setIsGitHubImportOpen(true)}
         onLoadSample={handleLoadSample}
+        onClearCanvas={handleClearCanvas}
+        onFileUpload={handleFileUpload}
         onExport={handleExport}
         isExporting={isExporting}
         isDarkMode={isDarkMode}
         onToggleDarkMode={toggleDarkMode}
       />
 
-      {/* Toast Notification Notification Bar */}
+      {/* Toast Notification Bar */}
       {exportNotice && (
         <div className="bg-blue-600 text-white text-xs px-4 py-2 flex items-center justify-between shadow-md z-30 animate-in fade-in slide-in-from-top-2">
           <span className="flex items-center gap-2 font-medium">
@@ -224,6 +264,8 @@ export default function Home() {
           onChange={setMarkdown}
           beautifiedValue={beautifiedMd}
           onApplyBeautified={() => setMarkdown(beautifiedMd)}
+          onClearCanvas={handleClearCanvas}
+          onFileUpload={handleFileUpload}
         />
 
         {/* Right Pane: Live Document Preview */}
@@ -240,12 +282,12 @@ export default function Home() {
       </main>
 
       {/* Developer Attribution Footer */}
-      <footer className="h-7 px-4 bg-slate-900 border-t border-slate-800 flex items-center justify-between text-[11px] text-slate-400 z-20">
+      <footer className="h-7 px-4 bg-slate-100 dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between text-[11px] text-slate-600 dark:text-slate-400 z-20">
         <div>
-          Developed by: <strong className="text-slate-200">Kishore Cheerala</strong>
+          Developed by: <strong className="text-slate-900 dark:text-slate-200">Kishore Cheerala</strong>
         </div>
         <div>
-          Reach out for features & suggestions: <a href="mailto:cheeralakishore@gmail.com" className="text-blue-400 hover:underline font-medium">cheeralakishore@gmail.com</a>
+          Reach out for features & suggestions: <a href="mailto:cheeralakishore@gmail.com" className="text-blue-600 dark:text-blue-400 hover:underline font-medium">cheeralakishore@gmail.com</a>
         </div>
       </footer>
 

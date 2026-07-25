@@ -4,14 +4,15 @@ import { THEMES } from '@/lib/constants/themes';
 import { ExportFormat, ThemeId } from '@/types';
 import {
   Download,
-  FileCode,
-  FileDown,
+  FilePlus,
   FileText,
   Github,
   Moon,
   Palette,
   Sparkles,
   Sun,
+  Trash2,
+  Upload,
   Wand2
 } from 'lucide-react';
 import React from 'react';
@@ -23,6 +24,8 @@ interface NavbarProps {
   onOpenAITools: () => void;
   onOpenGitHubImport: () => void;
   onLoadSample: (id: string) => void;
+  onClearCanvas: () => void;
+  onFileUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onExport: (format: ExportFormat) => void;
   isExporting: boolean;
   isDarkMode: boolean;
@@ -36,6 +39,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenAITools,
   onOpenGitHubImport,
   onLoadSample,
+  onClearCanvas,
+  onFileUpload,
   onExport,
   isExporting,
   isDarkMode,
@@ -58,13 +63,40 @@ export const Navbar: React.FC<NavbarProps> = ({
 
       {/* Action Toolbar */}
       <div className="flex items-center space-x-2">
+        {/* Prominent Upload Button */}
+        <label className="flex items-center space-x-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg cursor-pointer shadow-xs transition-colors">
+          <Upload className="w-4 h-4" />
+          <span>Upload .md File</span>
+          <input
+            type="file"
+            accept=".md,.txt,.markdown"
+            onChange={onFileUpload}
+            className="hidden"
+          />
+        </label>
+
+        {/* New / Clear Canvas Button */}
+        <button
+          onClick={onClearCanvas}
+          className="flex items-center space-x-1.5 px-3 py-1.5 text-xs font-medium text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/40 dark:hover:text-red-400 rounded-lg border border-slate-200 dark:border-slate-700 transition-colors"
+          title="Clear Document & Start Empty Canvas"
+        >
+          <Trash2 className="w-3.5 h-3.5" />
+          <span>Clear Canvas</span>
+        </button>
+
         {/* Sample Docs Dropdown */}
         <select
-          onChange={(e) => e.target.value && onLoadSample(e.target.value)}
+          onChange={(e) => {
+            if (e.target.value) {
+              onLoadSample(e.target.value);
+              e.target.value = '';
+            }
+          }}
           defaultValue=""
           className="text-xs bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 px-2.5 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-700 cursor-pointer font-medium outline-hidden"
         >
-          <option value="" disabled>Load Sample Document...</option>
+          <option value="" disabled>Load Sample Preset...</option>
           <option value="technical-readme">Technical README</option>
           <option value="api-docs">API Specification</option>
           <option value="academic-paper">Academic Research Paper</option>
@@ -115,7 +147,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         </button>
 
         {/* Export Buttons */}
-        <div className="flex items-center bg-blue-600 hover:bg-blue-700 text-white rounded-lg p-0.5 shadow-sm">
+        <div className="flex items-center bg-blue-600 hover:bg-blue-700 text-white rounded-lg p-0.5 shadow-xs">
           <button
             onClick={() => onExport('pdf')}
             disabled={isExporting}
@@ -148,7 +180,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         <button
           onClick={onToggleDarkMode}
           className="p-1.5 rounded-lg text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white bg-slate-100 dark:bg-slate-800 transition-colors"
-          title="Toggle Dark Mode"
+          title="Toggle Dark/Light Mode"
         >
           {isDarkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
         </button>

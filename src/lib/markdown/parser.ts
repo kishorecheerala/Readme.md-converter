@@ -12,6 +12,7 @@ export async function parseMarkdownToHtml(markdown: string): Promise<string> {
     const { default: parse } = await import('remark-parse');
     const { default: gfm } = await import('remark-gfm');
     const { default: math } = await import('remark-math');
+    const { default: remarkRehype } = await import('remark-rehype');
     const { default: rehypeKatex } = await import('rehype-katex');
     const { default: highlight } = await import('rehype-highlight');
     const { default: stringify } = await import('rehype-stringify');
@@ -20,6 +21,7 @@ export async function parseMarkdownToHtml(markdown: string): Promise<string> {
       .use(parse)
       .use(gfm)
       .use(math)
+      .use(remarkRehype)
       .use(rehypeKatex)
       .use(highlight, { ignoreMissing: true } as any)
       .use(stringify)
@@ -33,7 +35,7 @@ export async function parseMarkdownToHtml(markdown: string): Promise<string> {
     return html;
   } catch (error) {
     console.error('Error parsing markdown to HTML:', error);
-    return `<div class="error-box">Error parsing markdown document: ${String(error)}</div>`;
+    return `<div class="error-box p-4 bg-red-50 text-red-700 rounded-lg">Error parsing markdown document: ${String(error)}</div>`;
   }
 }
 
@@ -138,7 +140,7 @@ export function parseSections(markdown: string): SectionItem[] {
   lines.forEach((line) => {
     const headingMatch = line.match(/^(#{1,3})\s+(.+)$/);
     if (headingMatch) {
-      if (currentContent.length > 0 && (sectionIndex > 0 || currentContent.some(l => l.trim().length > 0))) {
+      if (currentContent.length > 0 && (sectionIndex > 0 || currentContent.some((l) => l.trim().length > 0))) {
         sectionIndex++;
         sections.push({
           id: `sec-${sectionIndex}`,
@@ -155,7 +157,7 @@ export function parseSections(markdown: string): SectionItem[] {
     }
   });
 
-  if (currentContent.length > 0 && currentContent.some(l => l.trim().length > 0)) {
+  if (currentContent.length > 0 && currentContent.some((l) => l.trim().length > 0)) {
     sectionIndex++;
     sections.push({
       id: `sec-${sectionIndex}`,
