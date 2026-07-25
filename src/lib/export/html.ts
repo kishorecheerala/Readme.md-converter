@@ -67,12 +67,16 @@ export function buildStandaloneHtml(options: HTMLExportOptions): string {
       background-color: var(--bg-color);
       color: var(--text-color);
       margin: 0;
-      padding: ${theme.styles.padding};
+      padding: 28px 40px 40px 40px;
       max-width: 900px;
       margin-left: auto;
       margin-right: auto;
       word-wrap: break-word;
       overflow-wrap: break-word;
+    }
+
+    body > *:first-child {
+      margin-top: 0 !important;
     }
 
     h1, h2, h3, h4, h5, h6 {

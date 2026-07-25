@@ -135,7 +135,7 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({
               lineHeight: theme.styles.lineHeight,
               backgroundColor: theme.styles.backgroundColor,
               color: theme.styles.textColor,
-              padding: theme.styles.padding,
+              padding: '32px 40px 40px 40px',
               boxSizing: 'border-box',
               boxShadow: theme.styles.shadow,
             }}
@@ -235,6 +235,13 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({
                 font-family: ${theme.styles.fontFamily};
                 color: ${theme.styles.textColor} !important;
                 line-height: ${theme.styles.lineHeight};
+              }
+              .document-render-content > *:first-child,
+              .document-render-content h1:first-child,
+              .document-render-content h2:first-child,
+              .document-render-content p:first-child {
+                margin-top: 0 !important;
+                padding-top: 0 !important;
               }
               .document-render-content strong,
               .document-render-content b {

@@ -39,12 +39,19 @@ export async function POST(req: NextRequest) {
         @media print {
           @page {
             size: ${pageSize} ${orientation};
-            margin: 15mm;
+            margin: 8mm 12mm 12mm 12mm;
           }
           body {
             max-width: 100% !important;
-            padding: 10px 0 !important;
+            padding: 0 !important;
             margin: 0 auto !important;
+          }
+          body > *:first-child,
+          h1:first-child,
+          h2:first-child,
+          p:first-child {
+            margin-top: 0 !important;
+            padding-top: 0 !important;
           }
           h1, h2, h3, h4, p, li, tr, pre, blockquote, img, .mermaid {
             break-inside: avoid !important;
