@@ -43,8 +43,8 @@ export async function POST(req: NextRequest) {
           }
           body {
             max-width: 100% !important;
-            padding: 0 !important;
-            margin: 0 !important;
+            padding: 10px 0 !important;
+            margin: 0 auto !important;
           }
           h1, h2, h3, h4, p, li, tr, pre, blockquote, img, .mermaid {
             break-inside: avoid !important;
