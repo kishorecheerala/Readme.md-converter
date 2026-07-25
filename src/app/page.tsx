@@ -146,14 +146,38 @@ export default function Home() {
 
     try {
       if (format === 'pdf') {
-        const renderElement = document.getElementById('pdf-render-target');
-        if (!renderElement) throw new Error('Render element target not found');
-        await exportToPDF({
-          element: renderElement,
-          filename: `${coverPage.title || 'document'}.pdf`,
-          pageSize,
-          orientation,
+        const res = await fetch('/api/convert/pdf', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            markdown,
+            title: coverPage.title || 'document',
+            themeId,
+            pageSize,
+            orientation,
+            customCss,
+          }),
         });
+
+        if (!res.ok) {
+          // Fallback to client-side exporter if API fails
+          const renderElement = document.getElementById('pdf-render-target');
+          if (!renderElement) throw new Error('Render element target not found');
+          await exportToPDF({
+            element: renderElement,
+            filename: `${coverPage.title || 'document'}.pdf`,
+            pageSize,
+            orientation,
+          });
+        } else {
+          const blob = await res.blob();
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `${coverPage.title || 'document'}.pdf`;
+          a.click();
+          URL.revokeObjectURL(url);
+        }
       } else if (format === 'docx') {
         const res = await fetch('/api/convert/docx', {
           method: 'POST',
