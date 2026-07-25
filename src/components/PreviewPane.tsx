@@ -232,7 +232,7 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({
                 display: none !important;
               }
               .document-render-content {
-                font-family: ${theme.styles.fontFamily}, "Noto Sans Symbols", "Noto Sans Symbols 2", "Segoe UI Symbol", "Noto Color Emoji", "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
+                font-family: ${theme.styles.fontFamily}, "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Noto Sans Symbols 2", "Segoe UI Symbol", sans-serif;
                 color: ${theme.styles.textColor} !important;
                 line-height: ${theme.styles.lineHeight};
               }
@@ -263,7 +263,7 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({
                 page-break-inside: avoid !important;
               }
               .document-render-content h1 {
-                font-family: ${theme.styles.headingFontFamily || theme.styles.fontFamily}, "Noto Sans Symbols", "Noto Sans Symbols 2", "Segoe UI Symbol", sans-serif;
+                font-family: ${theme.styles.headingFontFamily || theme.styles.fontFamily}, "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Noto Sans Symbols 2", "Segoe UI Symbol", sans-serif;
                 color: ${theme.styles.headingColor} !important;
                 font-size: 2.1em;
                 font-weight: 800;
@@ -277,7 +277,7 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({
                 overflow: visible;
               }
               .document-render-content h2 {
-                font-family: ${theme.styles.headingFontFamily || theme.styles.fontFamily}, "Noto Sans Symbols", "Noto Sans Symbols 2", "Segoe UI Symbol", sans-serif;
+                font-family: ${theme.styles.headingFontFamily || theme.styles.fontFamily}, "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Noto Sans Symbols 2", "Segoe UI Symbol", sans-serif;
                 color: ${theme.styles.headingColor} !important;
                 font-size: 1.5em;
                 font-weight: 700;
@@ -291,7 +291,7 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({
                 overflow: visible;
               }
               .document-render-content h3 {
-                font-family: ${theme.styles.headingFontFamily || theme.styles.fontFamily}, "Noto Sans Symbols", "Noto Sans Symbols 2", "Segoe UI Symbol", sans-serif;
+                font-family: ${theme.styles.headingFontFamily || theme.styles.fontFamily}, "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Noto Sans Symbols 2", "Segoe UI Symbol", sans-serif;
                 color: ${theme.styles.headingColor} !important;
                 font-size: 1.25em;
                 font-weight: 600;
@@ -301,7 +301,7 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({
                 word-break: break-word;
               }
               .document-render-content h4 {
-                font-family: ${theme.styles.headingFontFamily || theme.styles.fontFamily}, "Noto Sans Symbols", "Noto Sans Symbols 2", "Segoe UI Symbol", sans-serif;
+                font-family: ${theme.styles.headingFontFamily || theme.styles.fontFamily}, "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Noto Sans Symbols 2", "Segoe UI Symbol", sans-serif;
                 color: ${theme.styles.headingColor} !important;
                 font-size: 1.1em;
                 font-weight: 600;
@@ -342,7 +342,7 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({
                 word-break: break-all;
               }
               .document-render-content code {
-                font-family: ${theme.styles.codeFontFamily || 'monospace'}, "Noto Sans Mono", "Noto Sans Symbols", "Noto Sans Symbols 2", "Segoe UI Symbol";
+                font-family: ${theme.styles.codeFontFamily || 'monospace'}, "Noto Sans Mono", "Fira Code", "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Noto Sans Symbols 2", "Segoe UI Symbol", monospace;
                 background-color: ${theme.styles.codeBg};
                 color: ${theme.styles.codeTextColor} !important;
                 padding: 0.2em 0.4em;
@@ -351,7 +351,7 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({
                 border: 1px solid ${theme.styles.borderColor};
               }
               .document-render-content pre {
-                font-family: ${theme.styles.codeFontFamily || 'monospace'}, "Noto Sans Mono", "Noto Sans Symbols", "Noto Sans Symbols 2", "Segoe UI Symbol";
+                font-family: ${theme.styles.codeFontFamily || 'monospace'}, "Noto Sans Mono", "Fira Code", "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Noto Sans Symbols 2", "Segoe UI Symbol", monospace;
                 background-color: ${theme.styles.codeBg};
                 border: 1px solid ${theme.styles.borderColor};
                 border-radius: 10px;

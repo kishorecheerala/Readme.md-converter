@@ -33,9 +33,9 @@ export function buildStandaloneHtml(options: HTMLExportOptions): string {
 
   <style>
     :root {
-      --font-body: ${theme.styles.fontFamily}, "Noto Sans Symbols", "Noto Sans Symbols 2", "Segoe UI Symbol", "Noto Color Emoji", "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
-      --font-heading: ${theme.styles.headingFontFamily || theme.styles.fontFamily}, "Noto Sans Symbols", "Noto Sans Symbols 2", "Segoe UI Symbol", "Noto Color Emoji", "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
-      --font-code: ${theme.styles.codeFontFamily || "'JetBrains Mono'"}, "Noto Sans Mono", "Fira Code", "Noto Sans Symbols", "Noto Sans Symbols 2", "Segoe UI Symbol", "Noto Color Emoji", "Apple Color Emoji", "Segoe UI Emoji", monospace;
+      --font-body: ${theme.styles.fontFamily}, "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Noto Sans Symbols 2", "Segoe UI Symbol", sans-serif;
+      --font-heading: ${theme.styles.headingFontFamily || theme.styles.fontFamily}, "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Noto Sans Symbols 2", "Segoe UI Symbol", sans-serif;
+      --font-code: ${theme.styles.codeFontFamily || "'JetBrains Mono'"}, "Noto Sans Mono", "Fira Code", "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Noto Sans Symbols 2", "Segoe UI Symbol", monospace;
       --font-size: ${theme.styles.fontSize};
       --line-height: ${theme.styles.lineHeight};
       --bg-color: ${theme.styles.backgroundColor};
