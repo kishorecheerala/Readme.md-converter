@@ -53,9 +53,16 @@ export async function POST(req: NextRequest) {
             margin-top: 0 !important;
             padding-top: 0 !important;
           }
-          h1, h2, h3, h4, p, li, tr, pre, blockquote, img, .mermaid {
+          h1, h2, h3, h4, p, li, table, tr, pre, blockquote, img, .mermaid {
             break-inside: avoid !important;
             page-break-inside: avoid !important;
+          }
+          table {
+            border-collapse: collapse !important;
+            width: 100% !important;
+          }
+          table th, table td {
+            border: 1px solid ${theme.styles.borderColor} !important;
           }
           pre {
             white-space: pre !important;

@@ -154,19 +154,16 @@ export function buildStandaloneHtml(options: HTMLExportOptions): string {
     table {
       width: 100%;
       max-width: 100%;
-      border-collapse: separate;
-      border-spacing: 0;
-      margin: 1.8em 0;
-      border-radius: 10px;
-      border: 1px solid var(--border-color);
-      overflow: hidden;
+      border-collapse: collapse;
+      margin: 1.4em 0;
       word-break: break-word;
+      break-inside: avoid !important;
+      page-break-inside: avoid !important;
     }
 
     th, td {
-      padding: 0.85em 1.1em;
-      border-bottom: 1px solid var(--border-color);
-      border-right: 1px solid var(--border-color);
+      padding: 0.75em 1em;
+      border: 1px solid var(--border-color);
       word-break: break-word;
       overflow-wrap: anywhere;
     }
@@ -179,19 +176,10 @@ export function buildStandaloneHtml(options: HTMLExportOptions): string {
       text-transform: uppercase;
       letter-spacing: 0.04em;
       text-align: left;
-      border-bottom: 2px solid var(--border-color);
     }
 
     td {
       font-size: 0.94em;
-    }
-
-    table th:last-child, table td:last-child {
-      border-right: none;
-    }
-
-    table tr:last-child td {
-      border-bottom: none;
     }
 
     tr:nth-child(even) {
