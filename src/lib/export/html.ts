@@ -80,6 +80,11 @@ export function buildStandaloneHtml(options: HTMLExportOptions): string {
       word-break: break-word;
     }
 
+    strong, b {
+      color: var(--heading-color);
+      font-weight: 700;
+    }
+
     h1 { font-size: 2.1em; font-weight: 800; border-bottom: 2px solid var(--border-color); padding-bottom: 0.4em; }
     h2 { font-size: 1.5em; font-weight: 700; border-bottom: 1px solid var(--border-color); padding-bottom: 0.3em; }
     h3 { font-size: 1.25em; font-weight: 600; }

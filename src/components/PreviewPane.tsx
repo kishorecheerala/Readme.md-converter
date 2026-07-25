@@ -210,9 +210,9 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({
               </div>
             )}
 
-            {/* Document Content Rendered HTML */}
+            {/* Document Content Rendered HTML (explicitly without dark:prose-invert to prevent white-on-white text) */}
             <div
-              className="prose max-w-none dark:prose-invert break-words document-render-content"
+              className="prose max-w-none break-words document-render-content"
               dangerouslySetInnerHTML={{ __html: renderedHtml }}
             />
 
@@ -223,12 +223,17 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({
               }
               .document-render-content {
                 font-family: ${theme.styles.fontFamily};
-                color: ${theme.styles.textColor};
+                color: ${theme.styles.textColor} !important;
                 line-height: ${theme.styles.lineHeight};
+              }
+              .document-render-content strong,
+              .document-render-content b {
+                color: ${theme.styles.headingColor || theme.styles.textColor} !important;
+                font-weight: 700;
               }
               .document-render-content h1 {
                 font-family: ${theme.styles.headingFontFamily || theme.styles.fontFamily};
-                color: ${theme.styles.headingColor};
+                color: ${theme.styles.headingColor} !important;
                 font-size: 2.1em;
                 font-weight: 800;
                 letter-spacing: -0.02em;
@@ -240,7 +245,7 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({
               }
               .document-render-content h2 {
                 font-family: ${theme.styles.headingFontFamily || theme.styles.fontFamily};
-                color: ${theme.styles.headingColor};
+                color: ${theme.styles.headingColor} !important;
                 font-size: 1.5em;
                 font-weight: 700;
                 letter-spacing: -0.01em;
@@ -252,7 +257,7 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({
               }
               .document-render-content h3 {
                 font-family: ${theme.styles.headingFontFamily || theme.styles.fontFamily};
-                color: ${theme.styles.headingColor};
+                color: ${theme.styles.headingColor} !important;
                 font-size: 1.25em;
                 font-weight: 600;
                 margin-top: 1.4em;
@@ -260,6 +265,7 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({
                 word-break: break-word;
               }
               .document-render-content p {
+                color: ${theme.styles.textColor} !important;
                 margin-bottom: 1.2em;
                 line-height: ${theme.styles.lineHeight};
                 word-break: break-word;
@@ -267,16 +273,18 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({
               }
               .document-render-content ul,
               .document-render-content ol {
+                color: ${theme.styles.textColor} !important;
                 margin-bottom: 1.25em;
                 padding-left: 1.5em;
               }
               .document-render-content li {
+                color: ${theme.styles.textColor} !important;
                 margin-bottom: 0.4em;
                 line-height: 1.65;
                 word-break: break-word;
               }
               .document-render-content a {
-                color: ${theme.styles.accentColor};
+                color: ${theme.styles.accentColor} !important;
                 font-weight: 500;
                 text-decoration: underline;
                 text-underline-offset: 3px;
@@ -285,7 +293,7 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({
               .document-render-content code {
                 font-family: ${theme.styles.codeFontFamily || 'monospace'};
                 background-color: ${theme.styles.codeBg};
-                color: ${theme.styles.codeTextColor};
+                color: ${theme.styles.codeTextColor} !important;
                 padding: 0.25em 0.45em;
                 border-radius: 6px;
                 font-size: 0.88em;
@@ -309,12 +317,14 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({
                 background: none;
                 border: none;
                 padding: 0;
+                color: ${theme.styles.codeTextColor} !important;
                 white-space: pre-wrap !important;
                 word-break: break-word !important;
               }
               .document-render-content blockquote {
                 background-color: ${theme.styles.blockquoteBg};
                 border-left: 4px solid ${theme.styles.blockquoteBorderColor};
+                color: ${theme.styles.textColor} !important;
                 margin: 1.5em 0;
                 padding: 1em 1.25em;
                 border-radius: 0 10px 10px 0;
@@ -335,7 +345,7 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({
               }
               .document-render-content table th {
                 background-color: ${theme.styles.tableHeaderBg};
-                color: ${theme.styles.headingColor};
+                color: ${theme.styles.headingColor} !important;
                 font-weight: 700;
                 font-size: 0.82em;
                 text-transform: uppercase;
@@ -346,6 +356,7 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({
                 text-align: left;
               }
               .document-render-content table td {
+                color: ${theme.styles.textColor} !important;
                 padding: 0.8em 1.1em;
                 border-bottom: 1px solid ${theme.styles.borderColor};
                 border-right: 1px solid ${theme.styles.borderColor};
