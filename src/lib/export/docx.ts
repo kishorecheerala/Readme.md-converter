@@ -24,7 +24,7 @@ export interface DOCXExportOptions {
 }
 
 /**
- * Converts Markdown string into native Microsoft Word (.docx) Document file with tables and inline styling.
+ * Converts Markdown string into native Microsoft Word (.docx) Document file with tables, headings, and inline styling.
  */
 export async function exportToDocx(options: DOCXExportOptions): Promise<Blob> {
   const { markdown, title = 'Document', coverPage, headerFooter } = options;
@@ -201,7 +201,7 @@ export async function exportToDocx(options: DOCXExportOptions): Promise<Blob> {
       continue;
     }
 
-    // Headings
+    // Headings H1 to H6
     if (line.startsWith('# ')) {
       docChildren.push(
         new Paragraph({
@@ -224,6 +224,30 @@ export async function exportToDocx(options: DOCXExportOptions): Promise<Blob> {
           children: parseFormattedText(line.replace('### ', '')),
           heading: HeadingLevel.HEADING_3,
           spacing: { before: 200, after: 100 },
+        })
+      );
+    } else if (line.startsWith('#### ')) {
+      docChildren.push(
+        new Paragraph({
+          children: parseFormattedText(line.replace('#### ', '')),
+          heading: HeadingLevel.HEADING_4,
+          spacing: { before: 180, after: 90 },
+        })
+      );
+    } else if (line.startsWith('##### ')) {
+      docChildren.push(
+        new Paragraph({
+          children: parseFormattedText(line.replace('##### ', '')),
+          heading: HeadingLevel.HEADING_5,
+          spacing: { before: 150, after: 80 },
+        })
+      );
+    } else if (line.startsWith('###### ')) {
+      docChildren.push(
+        new Paragraph({
+          children: parseFormattedText(line.replace('###### ', '')),
+          heading: HeadingLevel.HEADING_6,
+          spacing: { before: 120, after: 60 },
         })
       );
     }

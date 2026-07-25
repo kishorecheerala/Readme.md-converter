@@ -4,6 +4,7 @@ import { AIToolsModal } from '@/components/AIToolsModal';
 import { EditorPane } from '@/components/EditorPane';
 import { GitHubImportModal } from '@/components/GitHubImportModal';
 import { Navbar } from '@/components/Navbar';
+import { PDFExportModal } from '@/components/PDFExportModal';
 import { PreviewPane } from '@/components/PreviewPane';
 import { SettingsModal } from '@/components/SettingsModal';
 import { SAMPLE_DOCUMENTS } from '@/lib/constants/samples';
@@ -37,6 +38,7 @@ export default function Home() {
   const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
   const [isAIToolsOpen, setIsAIToolsOpen] = useState<boolean>(false);
   const [isGitHubImportOpen, setIsGitHubImportOpen] = useState<boolean>(false);
+  const [isPDFModalOpen, setIsPDFModalOpen] = useState<boolean>(false);
 
   // Cover page configuration
   const [coverPage, setCoverPage] = useState<CoverPageConfig>({
@@ -133,6 +135,73 @@ export default function Home() {
     }));
   };
 
+  // Direct PDF Download Dispatcher
+  const handleDirectPDFDownload = async () => {
+    setIsPDFModalOpen(false);
+    setIsExporting(true);
+    setExportNotice('Preparing PDF document export...');
+
+    try {
+      let pdfDownloaded = false;
+      try {
+        const res = await fetch('/api/convert/pdf', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            markdown,
+            title: coverPage.title || 'document',
+            themeId,
+            pageSize,
+            orientation,
+            customCss,
+          }),
+        });
+
+        if (res.ok) {
+          const blob = await res.blob();
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `${coverPage.title || 'document'}.pdf`;
+          a.click();
+          URL.revokeObjectURL(url);
+          pdfDownloaded = true;
+        }
+      } catch (apiErr) {
+        console.warn('Server PDF API unavailable, using client PDF generator:', apiErr);
+      }
+
+      if (!pdfDownloaded) {
+        const renderElement = document.getElementById('pdf-render-target');
+        if (!renderElement) throw new Error('Render element target not found');
+        await exportToPDF({
+          element: renderElement,
+          filename: `${coverPage.title || 'document'}.pdf`,
+          pageSize,
+          orientation,
+        });
+      }
+
+      setExportNotice('PDF export completed successfully!');
+    } catch (err: any) {
+      console.error(err);
+      setExportNotice(`Export Error: ${err.message || 'Unknown error'}`);
+    } finally {
+      setIsExporting(false);
+      setTimeout(() => setExportNotice(null), 4000);
+    }
+  };
+
+  // Open Visual PDF Studio in New Tab
+  const handleOpenPDFStudio = () => {
+    setIsPDFModalOpen(false);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('readme_converter_studio_md', markdown);
+      localStorage.setItem('readme_converter_studio_theme', themeId);
+      window.open('/pdf-editor', '_blank');
+    }
+  };
+
   // Export Dispatcher
   const handleExport = async (format: ExportFormat) => {
     if (!markdown.trim()) {
@@ -141,51 +210,16 @@ export default function Home() {
       return;
     }
 
+    if (format === 'pdf') {
+      setIsPDFModalOpen(true);
+      return;
+    }
+
     setIsExporting(true);
     setExportNotice(`Preparing ${format.toUpperCase()} document export...`);
 
     try {
-      if (format === 'pdf') {
-        let pdfDownloaded = false;
-        try {
-          const res = await fetch('/api/convert/pdf', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              markdown,
-              title: coverPage.title || 'document',
-              themeId,
-              pageSize,
-              orientation,
-              customCss,
-            }),
-          });
-
-          if (res.ok) {
-            const blob = await res.blob();
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `${coverPage.title || 'document'}.pdf`;
-            a.click();
-            URL.revokeObjectURL(url);
-            pdfDownloaded = true;
-          }
-        } catch (apiErr) {
-          console.warn('Server PDF API unavailable, using client PDF generator:', apiErr);
-        }
-
-        if (!pdfDownloaded) {
-          const renderElement = document.getElementById('pdf-render-target');
-          if (!renderElement) throw new Error('Render element target not found');
-          await exportToPDF({
-            element: renderElement,
-            filename: `${coverPage.title || 'document'}.pdf`,
-            pageSize,
-            orientation,
-          });
-        }
-      } else if (format === 'docx') {
+      if (format === 'docx') {
         const res = await fetch('/api/convert/docx', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -354,6 +388,13 @@ export default function Home() {
         isOpen={isGitHubImportOpen}
         onClose={() => setIsGitHubImportOpen(false)}
         onImportRepo={handleGitHubImport}
+      />
+
+      <PDFExportModal
+        isOpen={isPDFModalOpen}
+        onClose={() => setIsPDFModalOpen(false)}
+        onDirectDownload={handleDirectPDFDownload}
+        onOpenStudio={handleOpenPDFStudio}
       />
     </div>
   );
