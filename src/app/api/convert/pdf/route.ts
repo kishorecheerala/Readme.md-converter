@@ -73,14 +73,12 @@ export async function POST(req: NextRequest) {
             font-size: 11px !important;
             line-height: 1.35 !important;
             overflow: visible !important;
-            font-variant-emoji: text !important;
           }
           pre code {
             white-space: pre !important;
             word-break: normal !important;
             word-wrap: normal !important;
             font-size: inherit !important;
-            font-variant-emoji: text !important;
           }
           .pdf-page-break {
             break-before: page !important;

@@ -342,8 +342,7 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({
                 word-break: break-all;
               }
               .document-render-content code {
-                font-family: ${theme.styles.codeFontFamily || 'monospace'}, "Noto Sans Mono", "Fira Code", "Courier New", monospace;
-                font-variant-emoji: text;
+                font-family: ${theme.styles.codeFontFamily || 'monospace'}, "Noto Sans Mono", "Fira Code", monospace;
                 background-color: ${theme.styles.codeBg};
                 color: ${theme.styles.codeTextColor} !important;
                 padding: 0.2em 0.4em;
@@ -352,8 +351,7 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({
                 border: 1px solid ${theme.styles.borderColor};
               }
               .document-render-content pre {
-                font-family: ${theme.styles.codeFontFamily || 'monospace'}, "Noto Sans Mono", "Fira Code", "Courier New", monospace;
-                font-variant-emoji: text;
+                font-family: ${theme.styles.codeFontFamily || 'monospace'}, "Noto Sans Mono", "Fira Code", monospace;
                 background-color: ${theme.styles.codeBg};
                 border: 1px solid ${theme.styles.borderColor};
                 border-radius: 10px;

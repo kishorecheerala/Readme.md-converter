@@ -35,7 +35,7 @@ export function buildStandaloneHtml(options: HTMLExportOptions): string {
     :root {
       --font-body: ${theme.styles.fontFamily}, "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
       --font-heading: ${theme.styles.headingFontFamily || theme.styles.fontFamily}, "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
-      --font-code: ${theme.styles.codeFontFamily || "'JetBrains Mono'"}, "Noto Sans Mono", "Fira Code", "Courier New", monospace;
+      --font-code: ${theme.styles.codeFontFamily || "'JetBrains Mono'"}, "Noto Sans Mono", "Fira Code", monospace;
       --font-size: ${theme.styles.fontSize};
       --line-height: ${theme.styles.lineHeight};
       --bg-color: ${theme.styles.backgroundColor};
@@ -102,7 +102,6 @@ export function buildStandaloneHtml(options: HTMLExportOptions): string {
 
     code {
       font-family: var(--font-code);
-      font-variant-emoji: text;
       background-color: var(--code-bg);
       color: var(--code-text);
       padding: 0.2em 0.4em;
@@ -114,7 +113,6 @@ export function buildStandaloneHtml(options: HTMLExportOptions): string {
 
     pre {
       font-family: var(--font-code);
-      font-variant-emoji: text;
       background-color: var(--code-bg);
       padding: 1.1em 1.25em;
       border-radius: 10px;
