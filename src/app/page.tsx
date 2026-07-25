@@ -56,10 +56,10 @@ export default function Home() {
   const [headerFooter, setHeaderFooter] = useState<HeaderFooterConfig>({
     enabledHeader: true,
     enabledFooter: true,
-    headerLeft: 'DocuCraft Pro Specs',
+    headerLeft: 'Readme.md Converter Specs',
     headerRight: 'CONFIDENTIAL',
-    footerLeft: 'Enterprise Core Architecture',
-    footerRight: 'v2.4.0',
+    footerLeft: 'Developed by Kishore Cheerala',
+    footerRight: 'cheeralakishore@gmail.com',
     showPageNumbers: true,
     showCoverPageNumbers: false,
   });
@@ -238,6 +238,16 @@ export default function Home() {
           customCss={customCss}
         />
       </main>
+
+      {/* Developer Attribution Footer */}
+      <footer className="h-7 px-4 bg-slate-900 border-t border-slate-800 flex items-center justify-between text-[11px] text-slate-400 z-20">
+        <div>
+          Developed by: <strong className="text-slate-200">Kishore Cheerala</strong>
+        </div>
+        <div>
+          Reach out for features & suggestions: <a href="mailto:cheeralakishore@gmail.com" className="text-blue-400 hover:underline font-medium">cheeralakishore@gmail.com</a>
+        </div>
+      </footer>
 
       {/* Modals */}
       <SettingsModal

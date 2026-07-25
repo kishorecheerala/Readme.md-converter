@@ -1,12 +1,15 @@
-# 🚀 DocuCraft Pro — README & Professional Document Converter
+# 🚀 Readme.md Converter — Professional Document & PDF Studio
 
-![Next.js 15](https://img.shields.io/badge/Next.js-15.1.0-black)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue)
+![Next.js 15](https://img.shields.io/badge/Next.js-15.5-black)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind-v3.4-cyan)
 ![License](https://img.shields.io/badge/license-MIT-purple)
 ![Vercel Ready](https://img.shields.io/badge/Vercel-Production%20Ready-brightgreen)
 
-**DocuCraft Pro** is a modern, high-performance SaaS web application built to convert `README.md` and Markdown files into beautifully styled **PDF**, **DOCX**, **HTML**, and **Clean Markdown** documents.
+> **Developed by**: Kishore Cheerala  
+> ✉️ **Reach out for features/suggestions**: [cheeralakishore@gmail.com](mailto:cheeralakishore@gmail.com)
+
+**Readme.md Converter** is a modern, high-performance web application built to convert any `README.md` or Markdown file into beautifully formatted **PDF**, **DOCX**, **HTML**, and **Clean Markdown** documents.
 
 ---
 

@@ -50,9 +50,9 @@ export const Navbar: React.FC<NavbarProps> = ({
         </div>
         <div>
           <h1 className="font-bold text-slate-900 dark:text-white text-base leading-tight flex items-center gap-2">
-            DocuCraft <span className="text-[10px] uppercase font-semibold bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300 px-1.5 py-0.5 rounded-md">Pro</span>
+            Readme.md Converter <span className="text-[10px] uppercase font-semibold bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300 px-1.5 py-0.5 rounded-md">Pro</span>
           </h1>
-          <p className="text-xs text-slate-500 dark:text-slate-400">README & Markdown Document Studio</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400">Professional Document & PDF Generator</p>
         </div>
       </div>
 

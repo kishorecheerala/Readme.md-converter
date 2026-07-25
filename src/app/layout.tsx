@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'DocuCraft Pro - README.md & Markdown to PDF/DOCX Converter',
-  description: 'Modern, high-performance Markdown to PDF, DOCX, and HTML document studio.',
+  title: 'Readme.md Converter - Professional PDF & DOCX Document Studio',
+  description: 'Convert any README.md or Markdown file into beautifully formatted PDF, DOCX, and HTML documents. Developed by Kishore Cheerala.',
   icons: {
     icon: '/favicon.svg',
     shortcut: '/favicon.svg',
