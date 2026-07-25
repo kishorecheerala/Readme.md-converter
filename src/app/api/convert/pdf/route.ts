@@ -14,6 +14,7 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const {
       markdown,
+      renderedHtmlDirect,
       title = 'Document',
       themeId = 'classic',
       pageSize = 'a4',
@@ -21,12 +22,12 @@ export async function POST(req: NextRequest) {
       customCss = '',
     } = body;
 
-    if (!markdown) {
-      return NextResponse.json({ error: 'Markdown content is required' }, { status: 400 });
+    if (!markdown && !renderedHtmlDirect) {
+      return NextResponse.json({ error: 'Markdown or HTML content is required' }, { status: 400 });
     }
 
-    // 1. Render Markdown to HTML
-    const renderedHtml = await parseMarkdownToHtml(markdown);
+    // 1. Render Markdown to HTML (or use pre-rendered HTML from editor)
+    const renderedHtml = renderedHtmlDirect || await parseMarkdownToHtml(markdown);
     const theme = THEMES[themeId as ThemeId] || THEMES.classic;
 
     // 2. Build Standalone HTML document with vector print styles
@@ -49,7 +50,18 @@ export async function POST(req: NextRequest) {
             break-inside: avoid !important;
             page-break-inside: avoid !important;
           }
+          .pdf-page-break {
+            break-before: page !important;
+            page-break-before: always !important;
+            height: 0 !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            border: none !important;
+            background: none !important;
+          }
+          .pdf-page-break-label { display: none !important; }
         }
+        .pdf-page-break-label { display: none; }
         ${customCss}
       `,
     });

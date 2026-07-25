@@ -192,84 +192,13 @@ export default function Home() {
     }
   };
 
-  // Open Visual PDF Editor in New Tab — generates PDF first, stores in IndexedDB
-  const handleOpenPDFStudio = async () => {
+  // Open Visual PDF Editor in New Tab — stores markdown for the editor to render as editable HTML
+  const handleOpenPDFStudio = () => {
     setIsPDFModalOpen(false);
-    setIsExporting(true);
-    setExportNotice('Generating PDF for visual editor...');
-
-    try {
-      let pdfArrayBuffer: ArrayBuffer | null = null;
-
-      // Try server-side Chromium PDF generation first
-      try {
-        const res = await fetch('/api/convert/pdf', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            markdown,
-            title: coverPage.title || 'document',
-            themeId,
-            pageSize,
-            orientation,
-            customCss,
-          }),
-        });
-
-        if (res.ok) {
-          pdfArrayBuffer = await res.arrayBuffer();
-        }
-      } catch (apiErr) {
-        console.warn('Server PDF API unavailable for editor:', apiErr);
-      }
-
-      // Fallback: generate client-side PDF and capture the blob
-      if (!pdfArrayBuffer) {
-        const renderElement = document.getElementById('pdf-render-target');
-        if (!renderElement) throw new Error('Render element target not found');
-        await exportToPDF({
-          element: renderElement,
-          filename: `${coverPage.title || 'document'}.pdf`,
-          pageSize,
-          orientation,
-        });
-        setExportNotice('Client PDF generated. Opening editor...');
-        // Client-side exporter downloads directly, can't capture blob — open editor anyway
-      }
-
-      if (pdfArrayBuffer) {
-        // Store PDF bytes in IndexedDB
-        const db = await new Promise<IDBDatabase>((resolve, reject) => {
-          const request = indexedDB.open('ReadmeConverterPDFs', 1);
-          request.onupgradeneeded = () => {
-            const db = request.result;
-            if (!db.objectStoreNames.contains('pdfs')) {
-              db.createObjectStore('pdfs', { keyPath: 'id' });
-            }
-          };
-          request.onsuccess = () => resolve(request.result);
-          request.onerror = () => reject(request.error);
-        });
-
-        const tx = db.transaction('pdfs', 'readwrite');
-        const store = tx.objectStore('pdfs');
-        store.put({ id: 'editor-pdf', data: pdfArrayBuffer });
-
-        await new Promise<void>((resolve, reject) => {
-          tx.oncomplete = () => resolve();
-          tx.onerror = () => reject(tx.error);
-        });
-
-        window.open('/pdf-editor', '_blank');
-      }
-
-      setExportNotice('');
-    } catch (err: any) {
-      console.error(err);
-      setExportNotice(`Error: ${err.message || 'Failed to prepare PDF for editor'}`);
-      setTimeout(() => setExportNotice(null), 4000);
-    } finally {
-      setIsExporting(false);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('readme_converter_studio_md', markdown);
+      localStorage.setItem('readme_converter_studio_theme', themeId);
+      window.open('/pdf-editor', '_blank');
     }
   };
 
