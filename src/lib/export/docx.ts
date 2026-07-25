@@ -327,9 +327,10 @@ export async function exportToDocx(options: DOCXExportOptions): Promise<Blob> {
 }
 
 /**
- * Helper function to parse inline Markdown formatting (bold, italic, code) into Word TextRun objects.
+ * Helper function to parse inline Markdown formatting (bold, italic, code, regex codes) into Word TextRun objects.
  */
 function parseFormattedText(text: string): TextRun[] {
+  if (!text) return [];
   const runs: TextRun[] = [];
 
   // Match bold (**text**), italic (*text*), inline code (`text`)
@@ -337,7 +338,7 @@ function parseFormattedText(text: string): TextRun[] {
   const matches = text.match(regex) || [text];
 
   matches.forEach((segment) => {
-    if (segment.startsWith('**') && segment.endsWith('**')) {
+    if (segment.startsWith('**') && segment.endsWith('**') && segment.length > 4) {
       runs.push(
         new TextRun({
           text: segment.slice(2, -2),
@@ -345,7 +346,7 @@ function parseFormattedText(text: string): TextRun[] {
           size: 22,
         })
       );
-    } else if (segment.startsWith('*') && segment.endsWith('*')) {
+    } else if (segment.startsWith('*') && segment.endsWith('*') && segment.length > 2) {
       runs.push(
         new TextRun({
           text: segment.slice(1, -1),
@@ -353,10 +354,12 @@ function parseFormattedText(text: string): TextRun[] {
           size: 22,
         })
       );
-    } else if (segment.startsWith('`') && segment.endsWith('`')) {
+    } else if (segment.startsWith('`') && segment.endsWith('`') && segment.length >= 2) {
+      // Remove outer backticks cleanly
+      const codeVal = segment.slice(1, -1);
       runs.push(
         new TextRun({
-          text: segment.slice(1, -1),
+          text: codeVal,
           font: 'Courier New',
           size: 20,
           color: '0F172A',
