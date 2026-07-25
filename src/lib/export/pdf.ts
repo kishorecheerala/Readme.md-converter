@@ -13,7 +13,7 @@ export interface PDFExportOptions {
 }
 
 /**
- * Client-side PDF exporter with smart element & list-item level page-break protection to prevent split letters/lines across page boundaries.
+ * Client-side PDF exporter with 10mm margins and smart element & list-item level page-break protection.
  */
 export async function exportToPDF(options: PDFExportOptions): Promise<void> {
   const {
@@ -47,15 +47,17 @@ export async function exportToPDF(options: PDFExportOptions): Promise<void> {
       format: pageSize,
     });
 
+    const margin = 10; // 10mm printable margins
     const pageWidth = pdf.internal.pageSize.getWidth();
     const pageHeight = pdf.internal.pageSize.getHeight();
 
-    const imgWidth = pageWidth;
+    const printableWidth = pageWidth - margin * 2;
+    const printableHeight = pageHeight - margin * 2;
 
-    const pageHeightPx = (canvas.width * pageHeight) / pageWidth;
+    const pageHeightPx = (canvas.width * printableHeight) / printableWidth;
     const totalPages = Math.ceil(canvas.height / pageHeightPx);
 
-    // Add Canvas Page Slices cleanly
+    // Add Canvas Page Slices cleanly with margins
     for (let page = 0; page < totalPages; page++) {
       if (page > 0) pdf.addPage();
 
@@ -87,7 +89,7 @@ export async function exportToPDF(options: PDFExportOptions): Promise<void> {
       }
 
       const pageImgData = pageCanvas.toDataURL('image/jpeg', 0.95);
-      pdf.addImage(pageImgData, 'JPEG', 0, 0, pageWidth, pageHeight);
+      pdf.addImage(pageImgData, 'JPEG', margin, margin, printableWidth, printableHeight);
     }
 
     pdf.save(filename);

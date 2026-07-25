@@ -123,7 +123,7 @@ export const THEMES: Record<ThemeId, ThemeConfig> = {
       lineHeight: '1.7',
       backgroundColor: '#0f172a',
       textColor: '#e2e8f0',
-      headingColor: '#f8fafc',
+      headingColor: '#ffffff',
       accentColor: '#38bdf8',
       codeBg: '#1e293b',
       codeTextColor: '#f8fafc',
@@ -274,7 +274,7 @@ export const THEMES: Record<ThemeId, ThemeConfig> = {
   word: {
     id: 'word',
     name: 'Microsoft Word Style',
-    description: 'Classic Office Word styling with Calibri typography and navy blue headings.',
+    description: 'Classic Office Word styling with Calibri typography and navy blue headers.',
     category: 'Standard',
     previewColor: '#2b579a',
     styles: {

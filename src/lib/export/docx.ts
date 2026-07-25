@@ -334,7 +334,7 @@ function parseFormattedText(text: string): TextRun[] {
   const runs: TextRun[] = [];
 
   // Match bold (**text**), italic (*text*), inline code (`text`)
-  const regex = /(\*\*.*?\*\*|\*.*?\*|`.*?`|[^\*`]+)/g;
+  const regex = /(\*\*.*?\*\*|\*.*?\*|`[^`]+`|[^\*`]+)/g;
   const matches = text.match(regex) || [text];
 
   matches.forEach((segment) => {
@@ -354,17 +354,19 @@ function parseFormattedText(text: string): TextRun[] {
           size: 22,
         })
       );
-    } else if (segment.startsWith('`') && segment.endsWith('`') && segment.length >= 2) {
-      // Remove outer backticks cleanly
-      const codeVal = segment.slice(1, -1);
-      runs.push(
-        new TextRun({
-          text: codeVal,
-          font: 'Courier New',
-          size: 20,
-          color: '0F172A',
-        })
-      );
+    } else if (segment.includes('`')) {
+      // Remove any surrounding backticks cleanly
+      const codeVal = segment.replace(/^`+/, '').replace(/`+$/, '');
+      if (codeVal) {
+        runs.push(
+          new TextRun({
+            text: codeVal,
+            font: 'Courier New',
+            size: 20,
+            color: '0F172A',
+          })
+        );
+      }
     } else {
       runs.push(
         new TextRun({

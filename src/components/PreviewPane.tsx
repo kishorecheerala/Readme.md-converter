@@ -71,6 +71,8 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({
     return isLandscape ? 'w-[1122px]' : 'w-[794px]';
   };
 
+  const isDarkTableHeader = themeId === 'word' || themeId === 'corporate' || themeId === 'dark';
+
   return (
     <div className="flex flex-col h-full bg-slate-100 dark:bg-slate-950 overflow-hidden">
       {/* Preview Toolbar */}
@@ -252,10 +254,12 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({
                 font-weight: 800;
                 letter-spacing: -0.02em;
                 margin-top: 1.8em;
-                margin-bottom: 0.8em;
-                padding-bottom: 0.4em;
+                margin-bottom: 0.9em;
+                padding-bottom: 0.6em;
                 border-bottom: 2px solid ${theme.styles.borderColor};
+                line-height: 1.35;
                 word-break: break-word;
+                overflow: visible;
               }
               .document-render-content h2 {
                 font-family: ${theme.styles.headingFontFamily || theme.styles.fontFamily};
@@ -264,10 +268,12 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({
                 font-weight: 700;
                 letter-spacing: -0.01em;
                 margin-top: 1.6em;
-                margin-bottom: 0.7em;
-                padding-bottom: 0.3em;
+                margin-bottom: 0.8em;
+                padding-bottom: 0.5em;
                 border-bottom: 1px solid ${theme.styles.borderColor};
+                line-height: 1.35;
                 word-break: break-word;
+                overflow: visible;
               }
               .document-render-content h3 {
                 font-family: ${theme.styles.headingFontFamily || theme.styles.fontFamily};
@@ -276,6 +282,7 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({
                 font-weight: 600;
                 margin-top: 1.4em;
                 margin-bottom: 0.6em;
+                line-height: 1.35;
                 word-break: break-word;
               }
               .document-render-content p {
@@ -359,12 +366,12 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({
               }
               .document-render-content table th {
                 background-color: ${theme.styles.tableHeaderBg};
-                color: ${theme.styles.headingColor} !important;
+                color: ${isDarkTableHeader ? '#ffffff' : theme.styles.headingColor} !important;
                 font-weight: 700;
-                font-size: 0.82em;
+                font-size: 0.85em;
                 text-transform: uppercase;
                 letter-spacing: 0.04em;
-                padding: 0.85em 1.1em;
+                padding: 0.9em 1.2em;
                 border-bottom: 2px solid ${theme.styles.borderColor};
                 border-right: 1px solid ${theme.styles.borderColor};
                 text-align: left;
