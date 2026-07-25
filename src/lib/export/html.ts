@@ -23,7 +23,7 @@ export function buildStandaloneHtml(options: HTMLExportOptions): string {
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Georgia&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Noto+Color+Emoji&family=Noto+Sans+Mono:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Georgia&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Noto+Color+Emoji&family=Noto+Sans+Mono:wght@400;500;600;700&family=Noto+Sans+Symbols:wght@400;600;700&family=Noto+Sans+Symbols+2&family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
   
   <!-- KaTeX CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.css">
@@ -33,9 +33,9 @@ export function buildStandaloneHtml(options: HTMLExportOptions): string {
 
   <style>
     :root {
-      --font-body: ${theme.styles.fontFamily}, "Noto Color Emoji", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
-      --font-heading: ${theme.styles.headingFontFamily || theme.styles.fontFamily}, "Noto Color Emoji", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
-      --font-code: ${theme.styles.codeFontFamily || "'JetBrains Mono'"}, "Noto Sans Mono", "Fira Code", monospace, "Noto Color Emoji", "Apple Color Emoji", "Segoe UI Emoji";
+      --font-body: ${theme.styles.fontFamily}, "Noto Sans Symbols", "Noto Sans Symbols 2", "Segoe UI Symbol", "Noto Color Emoji", "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
+      --font-heading: ${theme.styles.headingFontFamily || theme.styles.fontFamily}, "Noto Sans Symbols", "Noto Sans Symbols 2", "Segoe UI Symbol", "Noto Color Emoji", "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
+      --font-code: ${theme.styles.codeFontFamily || "'JetBrains Mono'"}, "Noto Sans Mono", "Fira Code", "Noto Sans Symbols", "Noto Sans Symbols 2", "Segoe UI Symbol", "Noto Color Emoji", "Apple Color Emoji", "Segoe UI Emoji", monospace;
       --font-size: ${theme.styles.fontSize};
       --line-height: ${theme.styles.lineHeight};
       --bg-color: ${theme.styles.backgroundColor};
@@ -154,11 +154,8 @@ export function buildStandaloneHtml(options: HTMLExportOptions): string {
     table {
       width: 100%;
       max-width: 100%;
-      border-collapse: separate;
-      border-spacing: 0;
+      border-collapse: collapse;
       margin: 1.4em 0;
-      border-radius: 8px;
-      border: 1px solid var(--border-color);
       word-break: break-word;
     }
 
@@ -169,8 +166,7 @@ export function buildStandaloneHtml(options: HTMLExportOptions): string {
 
     th, td {
       padding: 0.75em 1em;
-      border-bottom: 1px solid var(--border-color);
-      border-right: 1px solid var(--border-color);
+      border: 1px solid var(--border-color);
       word-break: break-word;
       overflow-wrap: anywhere;
     }
@@ -183,19 +179,10 @@ export function buildStandaloneHtml(options: HTMLExportOptions): string {
       text-transform: uppercase;
       letter-spacing: 0.04em;
       text-align: left;
-      border-bottom: 2px solid var(--border-color);
     }
 
     td {
       font-size: 0.94em;
-    }
-
-    table th:last-child, table td:last-child {
-      border-right: none;
-    }
-
-    table tr:last-child td {
-      border-bottom: none;
     }
 
     tr:nth-child(even) {

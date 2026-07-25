@@ -232,7 +232,7 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({
                 display: none !important;
               }
               .document-render-content {
-                font-family: ${theme.styles.fontFamily};
+                font-family: ${theme.styles.fontFamily}, "Noto Sans Symbols", "Noto Sans Symbols 2", "Segoe UI Symbol", "Noto Color Emoji", "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
                 color: ${theme.styles.textColor} !important;
                 line-height: ${theme.styles.lineHeight};
               }
@@ -263,7 +263,7 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({
                 page-break-inside: avoid !important;
               }
               .document-render-content h1 {
-                font-family: ${theme.styles.headingFontFamily || theme.styles.fontFamily};
+                font-family: ${theme.styles.headingFontFamily || theme.styles.fontFamily}, "Noto Sans Symbols", "Noto Sans Symbols 2", "Segoe UI Symbol", sans-serif;
                 color: ${theme.styles.headingColor} !important;
                 font-size: 2.1em;
                 font-weight: 800;
@@ -277,7 +277,7 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({
                 overflow: visible;
               }
               .document-render-content h2 {
-                font-family: ${theme.styles.headingFontFamily || theme.styles.fontFamily};
+                font-family: ${theme.styles.headingFontFamily || theme.styles.fontFamily}, "Noto Sans Symbols", "Noto Sans Symbols 2", "Segoe UI Symbol", sans-serif;
                 color: ${theme.styles.headingColor} !important;
                 font-size: 1.5em;
                 font-weight: 700;
@@ -291,7 +291,7 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({
                 overflow: visible;
               }
               .document-render-content h3 {
-                font-family: ${theme.styles.headingFontFamily || theme.styles.fontFamily};
+                font-family: ${theme.styles.headingFontFamily || theme.styles.fontFamily}, "Noto Sans Symbols", "Noto Sans Symbols 2", "Segoe UI Symbol", sans-serif;
                 color: ${theme.styles.headingColor} !important;
                 font-size: 1.25em;
                 font-weight: 600;
@@ -301,7 +301,7 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({
                 word-break: break-word;
               }
               .document-render-content h4 {
-                font-family: ${theme.styles.headingFontFamily || theme.styles.fontFamily};
+                font-family: ${theme.styles.headingFontFamily || theme.styles.fontFamily}, "Noto Sans Symbols", "Noto Sans Symbols 2", "Segoe UI Symbol", sans-serif;
                 color: ${theme.styles.headingColor} !important;
                 font-size: 1.1em;
                 font-weight: 600;
@@ -342,7 +342,7 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({
                 word-break: break-all;
               }
               .document-render-content code {
-                font-family: ${theme.styles.codeFontFamily || 'monospace'};
+                font-family: ${theme.styles.codeFontFamily || 'monospace'}, "Noto Sans Mono", "Noto Sans Symbols", "Noto Sans Symbols 2", "Segoe UI Symbol";
                 background-color: ${theme.styles.codeBg};
                 color: ${theme.styles.codeTextColor} !important;
                 padding: 0.2em 0.4em;
@@ -351,7 +351,7 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({
                 border: 1px solid ${theme.styles.borderColor};
               }
               .document-render-content pre {
-                font-family: ${theme.styles.codeFontFamily || 'monospace'};
+                font-family: ${theme.styles.codeFontFamily || 'monospace'}, "Noto Sans Mono", "Noto Sans Symbols", "Noto Sans Symbols 2", "Segoe UI Symbol";
                 background-color: ${theme.styles.codeBg};
                 border: 1px solid ${theme.styles.borderColor};
                 border-radius: 10px;
@@ -391,11 +391,8 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({
               .document-render-content table {
                 width: 100% !important;
                 max-width: 100% !important;
-                border-collapse: separate !important;
-                border-spacing: 0 !important;
+                border-collapse: collapse !important;
                 margin: 1.4em 0 !important;
-                border-radius: 8px !important;
-                border: 1px solid ${theme.styles.borderColor} !important;
                 word-break: break-word !important;
               }
               .document-render-content table tr {
@@ -410,25 +407,16 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({
                 text-transform: uppercase;
                 letter-spacing: 0.04em;
                 padding: 0.8em 1em;
-                border-bottom: 2px solid ${theme.styles.borderColor} !important;
-                border-right: 1px solid ${theme.styles.borderColor} !important;
+                border: 1px solid ${theme.styles.borderColor} !important;
                 text-align: left;
               }
               .document-render-content table td {
                 color: ${theme.styles.textColor} !important;
                 padding: 0.7em 1em;
-                border-bottom: 1px solid ${theme.styles.borderColor} !important;
-                border-right: 1px solid ${theme.styles.borderColor} !important;
+                border: 1px solid ${theme.styles.borderColor} !important;
                 word-break: break-word !important;
                 overflow-wrap: anywhere !important;
                 font-size: 0.94em;
-              }
-              .document-render-content table th:last-child,
-              .document-render-content table td:last-child {
-                border-right: none !important;
-              }
-              .document-render-content table tr:last-child td {
-                border-bottom: none !important;
               }
               .document-render-content table tr:nth-child(even) {
                 background-color: ${theme.styles.tableAltRowBg};
