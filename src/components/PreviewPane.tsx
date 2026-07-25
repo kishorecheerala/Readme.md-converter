@@ -391,11 +391,12 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({
               .document-render-content table {
                 width: 100% !important;
                 max-width: 100% !important;
-                border-collapse: collapse !important;
+                border-collapse: separate !important;
+                border-spacing: 0 !important;
                 margin: 1.4em 0 !important;
+                border-radius: 8px !important;
+                border: 1px solid ${theme.styles.borderColor} !important;
                 word-break: break-word !important;
-                break-inside: avoid !important;
-                page-break-inside: avoid !important;
               }
               .document-render-content table tr {
                 break-inside: avoid !important;
@@ -409,16 +410,25 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({
                 text-transform: uppercase;
                 letter-spacing: 0.04em;
                 padding: 0.8em 1em;
-                border: 1px solid ${theme.styles.borderColor} !important;
+                border-bottom: 2px solid ${theme.styles.borderColor} !important;
+                border-right: 1px solid ${theme.styles.borderColor} !important;
                 text-align: left;
               }
               .document-render-content table td {
                 color: ${theme.styles.textColor} !important;
                 padding: 0.7em 1em;
-                border: 1px solid ${theme.styles.borderColor} !important;
+                border-bottom: 1px solid ${theme.styles.borderColor} !important;
+                border-right: 1px solid ${theme.styles.borderColor} !important;
                 word-break: break-word !important;
                 overflow-wrap: anywhere !important;
                 font-size: 0.94em;
+              }
+              .document-render-content table th:last-child,
+              .document-render-content table td:last-child {
+                border-right: none !important;
+              }
+              .document-render-content table tr:last-child td {
+                border-bottom: none !important;
               }
               .document-render-content table tr:nth-child(even) {
                 background-color: ${theme.styles.tableAltRowBg};

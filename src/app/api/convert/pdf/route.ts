@@ -53,16 +53,26 @@ export async function POST(req: NextRequest) {
             margin-top: 0 !important;
             padding-top: 0 !important;
           }
-          h1, h2, h3, h4, p, li, table, tr, pre, blockquote, img, .mermaid {
+          h1, h2, h3, h4, p, li, tr, pre, blockquote, img, .mermaid {
             break-inside: avoid !important;
             page-break-inside: avoid !important;
           }
           table {
-            border-collapse: collapse !important;
+            border-collapse: separate !important;
+            border-spacing: 0 !important;
             width: 100% !important;
+            border-radius: 8px !important;
+            border: 1px solid ${theme.styles.borderColor} !important;
           }
           table th, table td {
-            border: 1px solid ${theme.styles.borderColor} !important;
+            border-bottom: 1px solid ${theme.styles.borderColor} !important;
+            border-right: 1px solid ${theme.styles.borderColor} !important;
+          }
+          table th:last-child, table td:last-child {
+            border-right: none !important;
+          }
+          table tr:last-child td {
+            border-bottom: none !important;
           }
           pre {
             white-space: pre !important;
