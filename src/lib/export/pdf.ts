@@ -13,7 +13,7 @@ export interface PDFExportOptions {
 }
 
 /**
- * Client-side PDF exporter converting rendered DOM element into high-DPI PDF document.
+ * Client-side PDF exporter with smart element-level page-break protection to prevent split letters/lines across page boundaries.
  */
 export async function exportToPDF(options: PDFExportOptions): Promise<void> {
   const {
@@ -24,15 +24,23 @@ export async function exportToPDF(options: PDFExportOptions): Promise<void> {
   } = options;
 
   try {
+    // 1. Measure and inject page-break spacers BEFORE elements that cross page boundaries
+    const cleanSpacers = injectSmartPageBreaks(element);
+
+    // 2. Render Element to High-DPI Canvas
     const canvas = await html2canvas(element, {
-      scale: 2, // High DPI (300 DPI equivalent)
+      scale: 2, // High DPI
       useCORS: true,
       allowTaint: true,
       logging: false,
       backgroundColor: '#ffffff',
+      windowWidth: element.scrollWidth,
+      windowHeight: element.scrollHeight,
     });
 
-    const imgData = canvas.toDataURL('image/jpeg', 0.95);
+    // Clean up inserted spacers from DOM immediately
+    cleanSpacers();
+
     const pdf = new jsPDF({
       orientation: orientation,
       unit: 'mm',
@@ -45,19 +53,42 @@ export async function exportToPDF(options: PDFExportOptions): Promise<void> {
     const imgWidth = pageWidth;
     const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-    let heightLeft = imgHeight;
-    let position = 0;
+    const pageHeightPx = (canvas.width * pageHeight) / pageWidth;
+    const totalPages = Math.ceil(canvas.height / pageHeightPx);
 
-    // Add first page
-    pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
-    heightLeft -= pageHeight;
+    // Add Canvas Page Slices cleanly
+    for (let page = 0; page < totalPages; page++) {
+      if (page > 0) pdf.addPage();
 
-    // Add subsequent pages if canvas exceeds single page height
-    while (heightLeft > 0) {
-      position = heightLeft - imgHeight;
-      pdf.addPage();
-      pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
-      heightLeft -= pageHeight;
+      const sourceY = page * pageHeightPx;
+      const sourceHeight = Math.min(pageHeightPx, canvas.height - sourceY);
+
+      // Create a temporary canvas slice for this page
+      const pageCanvas = document.createElement('canvas');
+      pageCanvas.width = canvas.width;
+      pageCanvas.height = pageHeightPx;
+      const ctx = pageCanvas.getContext('2d');
+
+      if (ctx) {
+        // Fill page background white
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, pageCanvas.width, pageCanvas.height);
+        
+        ctx.drawImage(
+          canvas,
+          0,
+          sourceY,
+          canvas.width,
+          sourceHeight,
+          0,
+          0,
+          canvas.width,
+          sourceHeight
+        );
+      }
+
+      const pageImgData = pageCanvas.toDataURL('image/jpeg', 0.95);
+      pdf.addImage(pageImgData, 'JPEG', 0, 0, pageWidth, pageHeight);
     }
 
     pdf.save(filename);
@@ -65,4 +96,51 @@ export async function exportToPDF(options: PDFExportOptions): Promise<void> {
     console.error('PDF generation error:', error);
     throw new Error('Failed to generate PDF document');
   }
+}
+
+/**
+ * Calculates printable page height in DOM pixels and inserts spacers before elements crossing page breaks.
+ */
+function injectSmartPageBreaks(element: HTMLElement): () => void {
+  const containerRect = element.getBoundingClientRect();
+  const containerWidth = containerRect.width;
+  
+  // Standard A4 aspect ratio (297mm / 210mm = 1.414)
+  const pageHeightPx = containerWidth * 1.414;
+  
+  const targetSelector = 'h1, h2, h3, h4, p, pre, blockquote, tr, img, .mermaid';
+  const nodes = Array.from(element.querySelectorAll<HTMLElement>(targetSelector));
+  
+  const addedSpacers: HTMLElement[] = [];
+
+  nodes.forEach((node) => {
+    const nodeRect = node.getBoundingClientRect();
+    const relativeTop = nodeRect.top - containerRect.top;
+    const relativeBottom = nodeRect.bottom - containerRect.top;
+
+    const pageIndexTop = Math.floor(relativeTop / pageHeightPx);
+    const pageIndexBottom = Math.floor(relativeBottom / pageHeightPx);
+
+    // If element straddles across a page break boundary, inject a spacer div before it
+    if (pageIndexTop !== pageIndexBottom && nodeRect.height < pageHeightPx) {
+      const nextPageTop = (pageIndexTop + 1) * pageHeightPx;
+      const spacerHeight = nextPageTop - relativeTop + 8; // 8px buffer
+
+      if (spacerHeight > 0 && spacerHeight < pageHeightPx * 0.9) {
+        const spacer = document.createElement('div');
+        spacer.className = 'pdf-page-break-spacer';
+        spacer.style.height = `${spacerHeight}px`;
+        spacer.style.width = '100%';
+        spacer.style.display = 'block';
+
+        node.parentNode?.insertBefore(spacer, node);
+        addedSpacers.push(spacer);
+      }
+    }
+  });
+
+  // Return cleanup function to remove spacers after canvas capture
+  return () => {
+    addedSpacers.forEach((s) => s.parentNode?.removeChild(s));
+  };
 }

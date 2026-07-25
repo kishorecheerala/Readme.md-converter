@@ -9,7 +9,6 @@ import {
   Packer,
   Paragraph,
   PageNumber as PageNumberToken,
-  PageOrientation,
   Table,
   TableCell,
   TableRow,
@@ -25,7 +24,7 @@ export interface DOCXExportOptions {
 }
 
 /**
- * Converts Markdown string into native Microsoft Word (.docx) Document file.
+ * Converts Markdown string into native Microsoft Word (.docx) Document file with tables and inline styling.
  */
 export async function exportToDocx(options: DOCXExportOptions): Promise<Blob> {
   const { markdown, title = 'Document', coverPage, headerFooter } = options;
@@ -92,8 +91,70 @@ export async function exportToDocx(options: DOCXExportOptions): Promise<Blob> {
   let inCodeBlock = false;
   let codeBuffer: string[] = [];
 
+  let inTable = false;
+  let tableBuffer: string[] = [];
+
+  const flushTableBuffer = () => {
+    if (tableBuffer.length === 0) return;
+
+    // Filter out table separator rows (|---|---|)
+    const rows = tableBuffer.filter(
+      (r) => !r.trim().match(/^\|?(\s*:?-+:?\s*\|)+$/)
+    );
+
+    if (rows.length > 0) {
+      const docxRows: TableRow[] = [];
+
+      rows.forEach((rowStr, rowIndex) => {
+        const cells = rowStr
+          .trim()
+          .replace(/^\|/, '')
+          .replace(/\|$/, '')
+          .split('|')
+          .map((c) => c.trim());
+
+        const isHeader = rowIndex === 0;
+
+        const tableCells = cells.map(
+          (cellText) =>
+            new TableCell({
+              children: [
+                new Paragraph({
+                  children: parseFormattedText(cellText),
+                  spacing: { before: 100, after: 100 },
+                }),
+              ],
+              shading: isHeader ? { fill: 'F1F5F9' } : undefined,
+              margins: { top: 120, bottom: 120, left: 150, right: 150 },
+            })
+        );
+
+        docxRows.push(new TableRow({ children: tableCells }));
+      });
+
+      docChildren.push(
+        new Table({
+          width: { size: 100, type: WidthType.PERCENTAGE },
+          rows: docxRows,
+        })
+      );
+    }
+
+    tableBuffer = [];
+    inTable = false;
+  };
+
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
+
+    // Check Table Lines
+    if (line.trim().startsWith('|') && line.trim().endsWith('|')) {
+      inTable = true;
+      tableBuffer.push(line);
+      continue;
+    } else if (inTable) {
+      flushTableBuffer();
+    }
 
     // Handle Code Blocks
     if (line.trim().startsWith('```')) {
@@ -119,7 +180,7 @@ export async function exportToDocx(options: DOCXExportOptions): Promise<Blob> {
                           ],
                         })
                     ),
-                    shading: { fill: 'F1F5F9' },
+                    shading: { fill: 'F8FAFC' },
                     margins: { top: 200, bottom: 200, left: 200, right: 200 },
                   }),
                 ],
@@ -144,7 +205,7 @@ export async function exportToDocx(options: DOCXExportOptions): Promise<Blob> {
     if (line.startsWith('# ')) {
       docChildren.push(
         new Paragraph({
-          text: line.replace('# ', '').replace(/[*_`]/g, ''),
+          children: parseFormattedText(line.replace('# ', '')),
           heading: HeadingLevel.HEADING_1,
           spacing: { before: 400, after: 200 },
         })
@@ -152,7 +213,7 @@ export async function exportToDocx(options: DOCXExportOptions): Promise<Blob> {
     } else if (line.startsWith('## ')) {
       docChildren.push(
         new Paragraph({
-          text: line.replace('## ', '').replace(/[*_`]/g, ''),
+          children: parseFormattedText(line.replace('## ', '')),
           heading: HeadingLevel.HEADING_2,
           spacing: { before: 300, after: 150 },
         })
@@ -160,7 +221,7 @@ export async function exportToDocx(options: DOCXExportOptions): Promise<Blob> {
     } else if (line.startsWith('### ')) {
       docChildren.push(
         new Paragraph({
-          text: line.replace('### ', '').replace(/[*_`]/g, ''),
+          children: parseFormattedText(line.replace('### ', '')),
           heading: HeadingLevel.HEADING_3,
           spacing: { before: 200, after: 100 },
         })
@@ -168,10 +229,10 @@ export async function exportToDocx(options: DOCXExportOptions): Promise<Blob> {
     }
     // Bullet lists
     else if (line.trim().startsWith('- ') || line.trim().startsWith('* ')) {
-      const text = line.trim().substring(2).replace(/[*_`]/g, '');
+      const text = line.trim().substring(2);
       docChildren.push(
         new Paragraph({
-          text: text,
+          children: parseFormattedText(text),
           bullet: { level: 0 },
           spacing: { after: 100 },
         })
@@ -179,18 +240,21 @@ export async function exportToDocx(options: DOCXExportOptions): Promise<Blob> {
     }
     // Blockquotes
     else if (line.trim().startsWith('> ')) {
-      const text = line.trim().substring(2).replace(/[*_`]/g, '');
+      const text = line.trim().substring(2);
       docChildren.push(
         new Paragraph({
-          children: [
-            new TextRun({
-              text: text,
-              italics: true,
-              color: '3B82F6',
-            }),
-          ],
+          children: parseFormattedText(text),
           spacing: { before: 150, after: 150 },
           indent: { left: 360 },
+        })
+      );
+    }
+    // Horizontal Rule
+    else if (line.trim() === '---' || line.trim() === '***') {
+      docChildren.push(
+        new Paragraph({
+          border: { bottom: { color: 'CBD5E1', space: 1, style: BorderStyle.SINGLE, size: 6 } },
+          spacing: { before: 200, after: 200 },
         })
       );
     }
@@ -198,16 +262,16 @@ export async function exportToDocx(options: DOCXExportOptions): Promise<Blob> {
     else if (line.trim().length > 0) {
       docChildren.push(
         new Paragraph({
-          children: [
-            new TextRun({
-              text: line.replace(/[*_`]/g, ''),
-              size: 22,
-            }),
-          ],
+          children: parseFormattedText(line),
           spacing: { after: 150 },
         })
       );
     }
+  }
+
+  // Flush any trailing table
+  if (inTable) {
+    flushTableBuffer();
   }
 
   // Create Header & Footer
@@ -260,4 +324,53 @@ export async function exportToDocx(options: DOCXExportOptions): Promise<Blob> {
   });
 
   return await Packer.toBlob(doc);
+}
+
+/**
+ * Helper function to parse inline Markdown formatting (bold, italic, code) into Word TextRun objects.
+ */
+function parseFormattedText(text: string): TextRun[] {
+  const runs: TextRun[] = [];
+
+  // Match bold (**text**), italic (*text*), inline code (`text`)
+  const regex = /(\*\*.*?\*\*|\*.*?\*|`.*?`|[^\*`]+)/g;
+  const matches = text.match(regex) || [text];
+
+  matches.forEach((segment) => {
+    if (segment.startsWith('**') && segment.endsWith('**')) {
+      runs.push(
+        new TextRun({
+          text: segment.slice(2, -2),
+          bold: true,
+          size: 22,
+        })
+      );
+    } else if (segment.startsWith('*') && segment.endsWith('*')) {
+      runs.push(
+        new TextRun({
+          text: segment.slice(1, -1),
+          italics: true,
+          size: 22,
+        })
+      );
+    } else if (segment.startsWith('`') && segment.endsWith('`')) {
+      runs.push(
+        new TextRun({
+          text: segment.slice(1, -1),
+          font: 'Courier New',
+          size: 20,
+          color: '0F172A',
+        })
+      );
+    } else {
+      runs.push(
+        new TextRun({
+          text: segment,
+          size: 22,
+        })
+      );
+    }
+  });
+
+  return runs;
 }

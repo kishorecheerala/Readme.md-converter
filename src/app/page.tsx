@@ -51,15 +51,15 @@ export default function Home() {
     abstractText: '',
   });
 
-  // Header & Footer configuration
+  // Header & Footer configuration (disabled by default as requested)
   const [headerFooter, setHeaderFooter] = useState<HeaderFooterConfig>({
-    enabledHeader: true,
-    enabledFooter: true,
-    headerLeft: 'Readme.md Converter Specs',
-    headerRight: 'CONFIDENTIAL',
-    footerLeft: 'Developed by Kishore Cheerala',
-    footerRight: 'cheeralakishore@gmail.com',
-    showPageNumbers: true,
+    enabledHeader: false,
+    enabledFooter: false,
+    headerLeft: '',
+    headerRight: '',
+    footerLeft: '',
+    footerRight: '',
+    showPageNumbers: false,
     showCoverPageNumbers: false,
   });
 
@@ -112,7 +112,7 @@ export default function Home() {
       setMarkdown(found.content);
       setCoverPage((prev) => ({
         ...prev,
-        enabled: true,
+        enabled: false,
         title: found.name,
         subtitle: `Professional Preset (${found.category})`,
       }));
@@ -124,7 +124,7 @@ export default function Home() {
     setMarkdown(meta.rawReadme);
     setCoverPage((prev) => ({
       ...prev,
-      enabled: true,
+      enabled: false,
       title: meta.fullName,
       subtitle: meta.description,
       author: meta.owner,
