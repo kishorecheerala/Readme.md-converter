@@ -146,21 +146,36 @@ export default function Home() {
 
     try {
       if (format === 'pdf') {
-        const res = await fetch('/api/convert/pdf', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            markdown,
-            title: coverPage.title || 'document',
-            themeId,
-            pageSize,
-            orientation,
-            customCss,
-          }),
-        });
+        let pdfDownloaded = false;
+        try {
+          const res = await fetch('/api/convert/pdf', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              markdown,
+              title: coverPage.title || 'document',
+              themeId,
+              pageSize,
+              orientation,
+              customCss,
+            }),
+          });
 
-        if (!res.ok) {
-          // Fallback to client-side exporter if API fails
+          if (res.ok) {
+            const blob = await res.blob();
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${coverPage.title || 'document'}.pdf`;
+            a.click();
+            URL.revokeObjectURL(url);
+            pdfDownloaded = true;
+          }
+        } catch (apiErr) {
+          console.warn('Server PDF API unavailable, using client PDF generator:', apiErr);
+        }
+
+        if (!pdfDownloaded) {
           const renderElement = document.getElementById('pdf-render-target');
           if (!renderElement) throw new Error('Render element target not found');
           await exportToPDF({
@@ -169,14 +184,6 @@ export default function Home() {
             pageSize,
             orientation,
           });
-        } else {
-          const blob = await res.blob();
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = `${coverPage.title || 'document'}.pdf`;
-          a.click();
-          URL.revokeObjectURL(url);
         }
       } else if (format === 'docx') {
         const res = await fetch('/api/convert/docx', {

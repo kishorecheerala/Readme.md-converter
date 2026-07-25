@@ -6,7 +6,8 @@ import chromium from '@sparticuz/chromium';
 import { NextRequest, NextResponse } from 'next/server';
 import puppeteer from 'puppeteer-core';
 
-export const maxDuration = 60; // 60s Vercel serverless timeout limit
+export const dynamic = 'force-dynamic';
+export const maxDuration = 60; // 60s Vercel serverless limit
 
 export async function POST(req: NextRequest) {
   try {
@@ -53,16 +54,23 @@ export async function POST(req: NextRequest) {
       `,
     });
 
-    // 3. Launch Vercel-compatible Chromium Engine
-    const isVercel = process.env.VERCEL === '1' || process.env.NODE_ENV === 'production';
-    
-    const executablePath = isVercel
-      ? await chromium.executablePath()
-      : (process.platform === 'win32'
+    // 3. Configure Sparticuz Chromium for AWS Lambda / Vercel Serverless
+    const isVercel = Boolean(process.env.VERCEL) || process.env.NODE_ENV === 'production';
+
+    let executablePath: string;
+    if (isVercel) {
+      // Use Sparticuz remote tarball if local binary not bundled
+      executablePath = await chromium.executablePath(
+        'https://github.com/Sparticuz/chromium/releases/download/v131.0.0/chromium-v131.0.0-pack.tar'
+      );
+    } else {
+      executablePath =
+        process.platform === 'win32'
           ? 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe'
           : process.platform === 'darwin'
           ? '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
-          : '/usr/bin/google-chrome');
+          : '/usr/bin/google-chrome';
+    }
 
     const browser = await puppeteer.launch({
       args: isVercel ? chromium.args : ['--no-sandbox', '--disable-setuid-sandbox'],
