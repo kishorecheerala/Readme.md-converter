@@ -23,7 +23,7 @@ export function buildStandaloneHtml(options: HTMLExportOptions): string {
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Georgia&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Georgia&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
   
   <!-- KaTeX CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.css">
@@ -73,45 +73,48 @@ export function buildStandaloneHtml(options: HTMLExportOptions): string {
     h1, h2, h3, h4, h5, h6 {
       font-family: var(--font-heading);
       color: var(--heading-color);
-      margin-top: 1.5em;
-      margin-bottom: 0.5em;
+      margin-top: 1.8em;
+      margin-bottom: 0.8em;
       font-weight: 700;
       line-height: 1.25;
       word-break: break-word;
     }
 
-    h1 { font-size: 2.2em; border-bottom: 2px solid var(--border-color); padding-bottom: 0.3em; }
-    h2 { font-size: 1.6em; border-bottom: 1px solid var(--border-color); padding-bottom: 0.3em; }
-    h3 { font-size: 1.3em; }
+    h1 { font-size: 2.1em; font-weight: 800; border-bottom: 2px solid var(--border-color); padding-bottom: 0.4em; }
+    h2 { font-size: 1.5em; font-weight: 700; border-bottom: 1px solid var(--border-color); padding-bottom: 0.3em; }
+    h3 { font-size: 1.25em; font-weight: 600; }
 
-    p { margin-bottom: 1em; word-break: break-word; }
+    p { margin-bottom: 1.2em; word-break: break-word; line-height: var(--line-height); }
 
-    a { color: var(--accent-color); text-decoration: none; font-weight: 500; word-break: break-all; }
-    a:hover { text-decoration: underline; }
+    a { color: var(--accent-color); text-decoration: underline; text-underline-offset: 3px; font-weight: 500; word-break: break-all; }
 
     code {
       font-family: var(--font-code);
       background-color: var(--code-bg);
       color: var(--code-text);
-      padding: 0.2em 0.4em;
-      border-radius: 4px;
-      font-size: 0.9em;
+      padding: 0.25em 0.45em;
+      border-radius: 6px;
+      font-size: 0.88em;
+      border: 1px solid var(--border-color);
       word-break: break-word;
     }
 
     pre {
       background-color: var(--code-bg);
-      padding: 1.2em;
-      border-radius: 8px;
+      padding: 1.25em;
+      border-radius: 10px;
       overflow-x: auto;
       border: 1px solid var(--border-color);
       white-space: pre-wrap;
       word-break: break-word;
       word-wrap: break-word;
+      margin: 1.5em 0;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
     }
 
     pre code {
       background: none;
+      border: none;
       padding: 0;
       white-space: pre-wrap;
       word-break: break-word;
@@ -120,51 +123,85 @@ export function buildStandaloneHtml(options: HTMLExportOptions): string {
     blockquote {
       background-color: var(--blockquote-bg);
       border-left: 4px solid var(--blockquote-border);
-      margin: 1em 0;
-      padding: 0.8em 1.2em;
-      border-radius: 0 6px 6px 0;
+      margin: 1.5em 0;
+      padding: 1em 1.25em;
+      border-radius: 0 10px 10px 0;
+      font-style: italic;
       word-break: break-word;
     }
 
     table {
       width: 100%;
       max-width: 100%;
-      border-collapse: collapse;
-      margin: 1.5em 0;
-      table-layout: auto;
+      border-collapse: separate;
+      border-spacing: 0;
+      margin: 1.8em 0;
+      border-radius: 10px;
+      border: 1px solid var(--border-color);
+      overflow: hidden;
       word-break: break-word;
     }
 
     th, td {
-      border: 1px solid var(--border-color);
-      padding: 0.75em 1em;
-      text-align: left;
+      padding: 0.85em 1.1em;
+      border-bottom: 1px solid var(--border-color);
+      border-right: 1px solid var(--border-color);
       word-break: break-word;
       overflow-wrap: anywhere;
     }
 
     th {
       background-color: var(--table-header-bg);
-      font-weight: 600;
+      color: var(--heading-color);
+      font-weight: 700;
+      font-size: 0.82em;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      text-align: left;
+      border-bottom: 2px solid var(--border-color);
+    }
+
+    td {
+      font-size: 0.94em;
+    }
+
+    table th:last-child, table td:last-child {
+      border-right: none;
+    }
+
+    table tr:last-child td {
+      border-bottom: none;
     }
 
     tr:nth-child(even) {
       background-color: var(--table-alt-row);
     }
 
+    hr {
+      border: none;
+      height: 1px;
+      background-color: var(--border-color);
+      margin: 2.2em 0;
+    }
+
     img {
       max-width: 100%;
       height: auto;
-      border-radius: 6px;
-      display: block;
-      margin: 1.5em auto;
+      border-radius: 8px;
+      display: inline-block;
+      vertical-align: middle;
+      margin: 0.4em 0.2em;
     }
 
     .mermaid {
       text-align: center;
-      margin: 1.5em 0;
+      margin: 2em 0;
+      padding: 1em;
       max-width: 100%;
       overflow-x: auto;
+      background-color: var(--code-bg);
+      border-radius: 10px;
+      border: 1px solid var(--border-color);
     }
 
     ${customCss}

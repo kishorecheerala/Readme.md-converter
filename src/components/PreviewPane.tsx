@@ -74,17 +74,17 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({
   return (
     <div className="flex flex-col h-full bg-slate-100 dark:bg-slate-950 overflow-hidden">
       {/* Preview Toolbar */}
-      <div className="h-10 px-4 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs">
+      <div className="h-10 px-4 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs shadow-xs">
         <div className="flex items-center space-x-3 text-slate-600 dark:text-slate-300">
-          <span className="flex items-center gap-1 font-semibold">
+          <span className="flex items-center gap-1 font-semibold text-slate-900 dark:text-white">
             <Eye className="w-3.5 h-3.5 text-blue-500" />
             Live Document Preview
           </span>
-          <span className="text-slate-400">|</span>
-          <span className="uppercase font-mono bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded-sm">
+          <span className="text-slate-300 dark:text-slate-700">|</span>
+          <span className="uppercase font-mono bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded-sm text-[10px]">
             {pageSize} • {orientation}
           </span>
-          <span className="bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 font-medium px-2 py-0.5 rounded-md">
+          <span className="bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 font-semibold px-2.5 py-0.5 rounded-md">
             {theme.name}
           </span>
         </div>
@@ -117,7 +117,7 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({
       </div>
 
       {/* Document Viewport Wrapper */}
-      <div className="flex-1 overflow-auto p-8 flex justify-center bg-slate-200/80 dark:bg-slate-950">
+      <div className="flex-1 overflow-auto p-8 flex justify-center bg-slate-200/90 dark:bg-slate-950">
         <div
           style={{ transform: `scale(${zoom / 100})`, transformOrigin: 'top center' }}
           className="transition-transform duration-200"
@@ -135,6 +135,7 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({
               color: theme.styles.textColor,
               padding: theme.styles.padding,
               boxSizing: 'border-box',
+              boxShadow: theme.styles.shadow,
             }}
           >
             {/* Watermark Overlay */}
@@ -157,7 +158,7 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({
 
             {/* Header */}
             {headerFooter.enabledHeader && (
-              <div className="border-b border-slate-200 dark:border-slate-700 pb-2 mb-6 flex justify-between text-xs text-slate-400 font-mono">
+              <div className="border-b border-slate-200 dark:border-slate-700 pb-3 mb-8 flex justify-between text-xs text-slate-400 font-mono tracking-wider uppercase">
                 <span>{headerFooter.headerLeft}</span>
                 <span>{headerFooter.headerRight}</span>
               </div>
@@ -165,7 +166,7 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({
 
             {/* Cover Page */}
             {coverPage.enabled && (
-              <div className="min-h-[900px] flex flex-col justify-between border-b-2 border-slate-200 pb-12 mb-12 text-center">
+              <div className="min-h-[900px] flex flex-col justify-between border-b-2 border-slate-200 dark:border-slate-800 pb-12 mb-12 text-center">
                 <div className="pt-16">
                   {coverPage.logoUrl && (
                     <img
@@ -176,32 +177,32 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({
                   )}
                   <h1
                     className="text-4xl font-extrabold tracking-tight mb-4"
-                    style={{ color: theme.styles.headingColor }}
+                    style={{ color: theme.styles.headingColor, fontFamily: theme.styles.headingFontFamily }}
                   >
                     {coverPage.title || 'Document Title'}
                   </h1>
                   {coverPage.subtitle && (
-                    <p className="text-xl text-slate-500 italic max-w-xl mx-auto">
+                    <p className="text-xl text-slate-500 italic max-w-xl mx-auto font-serif">
                       {coverPage.subtitle}
                     </p>
                   )}
                 </div>
 
                 {coverPage.abstractText && (
-                  <div className="max-w-xl mx-auto my-8 p-4 bg-slate-50 dark:bg-slate-800/40 rounded-lg text-left text-sm text-slate-600 dark:text-slate-300 border-l-4 border-blue-500">
-                    <h4 className="font-bold text-xs uppercase text-blue-600 mb-1">Abstract</h4>
-                    <p>{coverPage.abstractText}</p>
+                  <div className="max-w-xl mx-auto my-8 p-5 bg-slate-50 dark:bg-slate-800/40 rounded-xl text-left text-sm text-slate-600 dark:text-slate-300 border-l-4 border-blue-500 shadow-xs">
+                    <h4 className="font-bold text-xs uppercase text-blue-600 tracking-wider mb-1.5">Executive Summary</h4>
+                    <p className="leading-relaxed">{coverPage.abstractText}</p>
                   </div>
                 )}
 
-                <div className="text-sm space-y-1 text-slate-500 border-t border-slate-200 pt-6 max-w-md mx-auto">
+                <div className="text-sm space-y-1.5 text-slate-500 border-t border-slate-200 dark:border-slate-800 pt-6 max-w-md mx-auto">
                   <p className="font-semibold text-slate-800 dark:text-slate-200">
                     Author: {coverPage.author || 'Author Name'}
                   </p>
                   <p>Date: {coverPage.date || new Date().toLocaleDateString()}</p>
                   <p>Version: {coverPage.version || '1.0.0'}</p>
                   {coverPage.confidentialLabel && (
-                    <span className="inline-block mt-2 px-2.5 py-0.5 text-xs font-bold bg-amber-100 text-amber-800 rounded-md">
+                    <span className="inline-block mt-2 px-3 py-1 text-xs font-bold bg-amber-100 text-amber-800 dark:bg-amber-900/50 dark:text-amber-300 rounded-md tracking-wider">
                       {coverPage.confidentialLabel}
                     </span>
                   )}
@@ -211,91 +212,186 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({
 
             {/* Document Content Rendered HTML */}
             <div
-              className="prose max-w-none dark:prose-invert break-words"
+              className="prose max-w-none dark:prose-invert break-words document-render-content"
               dangerouslySetInnerHTML={{ __html: renderedHtml }}
             />
 
-            {/* Custom Theme & Overflow Prevention CSS */}
+            {/* Premium Document Styling Engine */}
             <style jsx global>{`
               #pdf-render-target * {
                 box-sizing: border-box;
               }
-              #pdf-render-target h1,
-              #pdf-render-target h2,
-              #pdf-render-target h3,
-              #pdf-render-target h4 {
+              .document-render-content {
+                font-family: ${theme.styles.fontFamily};
+                color: ${theme.styles.textColor};
+                line-height: ${theme.styles.lineHeight};
+              }
+              .document-render-content h1 {
                 font-family: ${theme.styles.headingFontFamily || theme.styles.fontFamily};
                 color: ${theme.styles.headingColor};
+                font-size: 2.1em;
+                font-weight: 800;
+                letter-spacing: -0.02em;
+                margin-top: 1.8em;
+                margin-bottom: 0.8em;
+                padding-bottom: 0.4em;
+                border-bottom: 2px solid ${theme.styles.borderColor};
                 word-break: break-word;
               }
-              #pdf-render-target p,
-              #pdf-render-target li {
+              .document-render-content h2 {
+                font-family: ${theme.styles.headingFontFamily || theme.styles.fontFamily};
+                color: ${theme.styles.headingColor};
+                font-size: 1.5em;
+                font-weight: 700;
+                letter-spacing: -0.01em;
+                margin-top: 1.6em;
+                margin-bottom: 0.7em;
+                padding-bottom: 0.3em;
+                border-bottom: 1px solid ${theme.styles.borderColor};
+                word-break: break-word;
+              }
+              .document-render-content h3 {
+                font-family: ${theme.styles.headingFontFamily || theme.styles.fontFamily};
+                color: ${theme.styles.headingColor};
+                font-size: 1.25em;
+                font-weight: 600;
+                margin-top: 1.4em;
+                margin-bottom: 0.6em;
+                word-break: break-word;
+              }
+              .document-render-content p {
+                margin-bottom: 1.2em;
+                line-height: ${theme.styles.lineHeight};
                 word-break: break-word;
                 overflow-wrap: break-word;
               }
-              #pdf-render-target a {
+              .document-render-content ul,
+              .document-render-content ol {
+                margin-bottom: 1.25em;
+                padding-left: 1.5em;
+              }
+              .document-render-content li {
+                margin-bottom: 0.4em;
+                line-height: 1.65;
+                word-break: break-word;
+              }
+              .document-render-content a {
                 color: ${theme.styles.accentColor};
+                font-weight: 500;
+                text-decoration: underline;
+                text-underline-offset: 3px;
                 word-break: break-all;
               }
-              #pdf-render-target code {
+              .document-render-content code {
                 font-family: ${theme.styles.codeFontFamily || 'monospace'};
                 background-color: ${theme.styles.codeBg};
                 color: ${theme.styles.codeTextColor};
+                padding: 0.25em 0.45em;
+                border-radius: 6px;
+                font-size: 0.88em;
+                border: 1px solid ${theme.styles.borderColor};
                 word-break: break-word;
               }
-              #pdf-render-target pre {
+              .document-render-content pre {
                 background-color: ${theme.styles.codeBg};
-                border-color: ${theme.styles.borderColor};
+                border: 1px solid ${theme.styles.borderColor};
+                border-radius: 10px;
+                padding: 1.25em;
+                margin: 1.5em 0;
                 white-space: pre-wrap !important;
                 word-break: break-word !important;
                 word-wrap: break-word !important;
                 overflow-x: auto;
                 max-width: 100%;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.03);
               }
-              #pdf-render-target pre code {
+              .document-render-content pre code {
+                background: none;
+                border: none;
+                padding: 0;
                 white-space: pre-wrap !important;
                 word-break: break-word !important;
               }
-              #pdf-render-target blockquote {
+              .document-render-content blockquote {
                 background-color: ${theme.styles.blockquoteBg};
-                border-left-color: ${theme.styles.blockquoteBorderColor};
+                border-left: 4px solid ${theme.styles.blockquoteBorderColor};
+                margin: 1.5em 0;
+                padding: 1em 1.25em;
+                border-radius: 0 10px 10px 0;
+                font-style: italic;
                 word-break: break-word;
               }
-              #pdf-render-target table {
+              .document-render-content table {
                 width: 100% !important;
                 max-width: 100% !important;
-                table-layout: auto !important;
-                border-collapse: collapse;
-                margin: 1.5em 0;
+                border-collapse: separate !important;
+                border-spacing: 0 !important;
+                margin: 1.8em 0 !important;
+                border-radius: 10px !important;
+                border: 1px solid ${theme.styles.borderColor} !important;
+                overflow: hidden !important;
                 word-break: break-word !important;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.02);
               }
-              #pdf-render-target table th,
-              #pdf-render-target table td {
-                border: 1px solid ${theme.styles.borderColor};
-                padding: 0.6em 0.8em;
+              .document-render-content table th {
+                background-color: ${theme.styles.tableHeaderBg};
+                color: ${theme.styles.headingColor};
+                font-weight: 700;
+                font-size: 0.82em;
+                text-transform: uppercase;
+                letter-spacing: 0.04em;
+                padding: 0.85em 1.1em;
+                border-bottom: 2px solid ${theme.styles.borderColor};
+                border-right: 1px solid ${theme.styles.borderColor};
+                text-align: left;
+              }
+              .document-render-content table td {
+                padding: 0.8em 1.1em;
+                border-bottom: 1px solid ${theme.styles.borderColor};
+                border-right: 1px solid ${theme.styles.borderColor};
                 word-break: break-word !important;
                 overflow-wrap: anywhere !important;
+                font-size: 0.94em;
               }
-              #pdf-render-target table th {
-                background-color: ${theme.styles.tableHeaderBg};
+              .document-render-content table th:last-child,
+              .document-render-content table td:last-child {
+                border-right: none;
               }
-              #pdf-render-target table tr:nth-child(even) {
+              .document-render-content table tr:last-child td {
+                border-bottom: none;
+              }
+              .document-render-content table tr:nth-child(even) {
                 background-color: ${theme.styles.tableAltRowBg};
               }
-              #pdf-render-target img {
+              .document-render-content hr {
+                border: none;
+                height: 1px;
+                background-color: ${theme.styles.borderColor};
+                margin: 2.2em 0;
+              }
+              .document-render-content img {
                 max-width: 100% !important;
                 height: auto !important;
+                border-radius: 8px;
+                display: inline-block;
+                vertical-align: middle;
+                margin: 0.4em 0.2em;
               }
-              #pdf-render-target .mermaid {
+              .document-render-content .mermaid {
                 max-width: 100% !important;
                 overflow-x: auto;
+                margin: 2em 0;
+                padding: 1em;
+                background-color: ${theme.styles.codeBg};
+                border-radius: 10px;
+                border: 1px solid ${theme.styles.borderColor};
               }
               ${customCss}
             `}</style>
 
             {/* Footer */}
             {headerFooter.enabledFooter && (
-              <div className="border-t border-slate-200 dark:border-slate-700 pt-3 mt-12 flex justify-between items-center text-xs text-slate-400 font-mono">
+              <div className="border-t border-slate-200 dark:border-slate-700 pt-3 mt-12 flex justify-between items-center text-xs text-slate-400 font-mono tracking-wider">
                 <span>{headerFooter.footerLeft}</span>
                 {headerFooter.showPageNumbers && <span>Page 1</span>}
                 <span>{headerFooter.footerRight}</span>
