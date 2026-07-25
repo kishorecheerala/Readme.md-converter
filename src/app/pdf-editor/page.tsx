@@ -226,9 +226,15 @@ export default function PDFEditorStudioPage() {
 
   // Open Stirling-PDF for advanced editing
   const handleOpenStirlingPDF = () => {
-    // Use self-hosted instance URL from env, fallback to public stirlingpdf.io
+    // 1. Trigger PDF download/print dialog so user gets the PDF file
+    handlePrintPDF();
+
+    // 2. Open self-hosted Stirling-PDF instance in a new tab
     const stirlingUrl = process.env.NEXT_PUBLIC_STIRLING_PDF_URL || 'https://stirlingpdf.io';
     window.open(stirlingUrl, '_blank');
+
+    setNotice('PDF print popup opened! Save the PDF and drag it into Stirling PDF.');
+    setTimeout(() => setNotice(''), 6000);
   };
 
   if (isLoading) {
