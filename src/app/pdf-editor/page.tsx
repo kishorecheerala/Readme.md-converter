@@ -226,7 +226,9 @@ export default function PDFEditorStudioPage() {
 
   // Open Stirling-PDF for advanced editing
   const handleOpenStirlingPDF = () => {
-    window.open('https://stirlingpdf.io/', '_blank');
+    // Use self-hosted instance URL from env, fallback to public stirlingpdf.io
+    const stirlingUrl = process.env.NEXT_PUBLIC_STIRLING_PDF_URL || 'https://stirlingpdf.io';
+    window.open(stirlingUrl, '_blank');
   };
 
   if (isLoading) {
