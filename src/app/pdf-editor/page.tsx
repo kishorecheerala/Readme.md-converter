@@ -6,12 +6,16 @@ import { ThemeId } from '@/types';
 import {
   Download,
   ExternalLink,
+  Layers,
   Loader2,
   Minus,
   Plus,
   Printer,
   RotateCcw,
+  RotateCw,
   Scissors,
+  Trash2,
+  Zap,
   ZoomIn,
   ZoomOut,
 } from 'lucide-react';
@@ -27,6 +31,7 @@ export default function PDFEditorStudioPage() {
   const [themeId, setThemeId] = useState<ThemeId>('classic');
   const [zoom, setZoom] = useState<number>(75);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isExporting, setIsExporting] = useState<boolean>(false);
   const [notice, setNotice] = useState<string>('Loading document...');
   const [pageCount, setPageCount] = useState<number>(1);
   const [pageBoundaries, setPageBoundaries] = useState<number[]>([]);
@@ -116,7 +121,7 @@ export default function PDFEditorStudioPage() {
     setTimeout(() => setNotice(''), 2000);
   };
 
-  // ===== THE KEY FUNCTION: Open browser print dialog with exact layout =====
+  // Browser print PDF
   const handlePrintPDF = () => {
     if (!editorRef.current) return;
     const editedHtml = editorRef.current.innerHTML;
@@ -130,21 +135,15 @@ export default function PDFEditorStudioPage() {
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  @page {
-    size: A4;
-    margin: 20mm;
-  }
+  @page { size: A4; margin: 20mm; }
   * { box-sizing: border-box; }
   body {
     font-family: ${theme.styles.fontFamily};
     font-size: ${theme.styles.fontSize};
     line-height: ${theme.styles.lineHeight};
     color: ${theme.styles.textColor};
-    background: white;
-    margin: 0;
-    padding: 0;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
+    background: white; margin: 0; padding: 0;
+    -webkit-print-color-adjust: exact; print-color-adjust: exact;
   }
   code::before, code::after { content: "" !important; display: none !important; }
   strong, b { color: ${theme.styles.headingColor}; font-weight: 700; }
@@ -213,26 +212,72 @@ export default function PDFEditorStudioPage() {
     }
     printWindow.document.write(printHtml);
     printWindow.document.close();
-
-    // Wait for fonts/styles to load, then trigger print
-    printWindow.onload = () => {
-      setTimeout(() => printWindow.print(), 600);
-    };
-    // Fallback if onload doesn't fire
-    setTimeout(() => {
-      try { printWindow.print(); } catch (e) {}
-    }, 1500);
+    printWindow.onload = () => { setTimeout(() => printWindow.print(), 600); };
+    setTimeout(() => { try { printWindow.print(); } catch (e) {} }, 1500);
   };
 
-  // Open Stirling-PDF for advanced editing
-  const handleOpenStirlingPDF = () => {
-    // 1. Trigger PDF download/print dialog so user gets the PDF file
-    handlePrintPDF();
+  // Direct Stirling PDF REST API call
+  const handleStirlingApiAction = async (action: string, extraFields: Record<string, string> = {}) => {
+    if (!editorRef.current) return;
+    setIsExporting(true);
+    setNotice(`Connecting to Stirling PDF server (${action})...`);
 
-    // 2. Open self-hosted Stirling-PDF instance in a new tab
+    try {
+      // 1. Generate base PDF from current editor HTML
+      const pdfRes = await fetch('/api/convert/pdf', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          renderedHtmlDirect: editorRef.current.innerHTML,
+          title: 'document',
+          themeId,
+          pageSize: 'a4',
+          orientation: 'portrait',
+        }),
+      });
+
+      if (!pdfRes.ok) throw new Error('Base PDF generation failed');
+      const basePdfBlob = await pdfRes.blob();
+
+      // 2. Build FormData for Stirling PDF
+      const formData = new FormData();
+      formData.append('fileInput', basePdfBlob, 'document.pdf');
+      Object.entries(extraFields).forEach(([k, v]) => formData.append(k, v));
+
+      // 3. Post to our proxy API
+      const stirlingRes = await fetch(`/api/stirling?action=${action}`, {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!stirlingRes.ok) {
+        const errJson = await stirlingRes.json().catch(() => ({}));
+        throw new Error(errJson.details || errJson.error || `Stirling API returned status ${stirlingRes.status}`);
+      }
+
+      // 4. Download processed PDF
+      const processedBlob = await stirlingRes.blob();
+      const url = URL.createObjectURL(processedBlob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `document-stirling-${action}.pdf`;
+      a.click();
+      URL.revokeObjectURL(url);
+
+      setNotice(`Stirling PDF operation "${action}" completed successfully!`);
+    } catch (err: any) {
+      console.error('Stirling API Error:', err);
+      setNotice(`Stirling API: ${err.message || 'Processing failed'}`);
+    } finally {
+      setIsExporting(false);
+      setTimeout(() => setNotice(''), 4500);
+    }
+  };
+
+  const handleOpenStirlingPDFUI = () => {
+    handlePrintPDF();
     const stirlingUrl = process.env.NEXT_PUBLIC_STIRLING_PDF_URL || 'https://stirlingpdf.io';
     window.open(stirlingUrl, '_blank');
-
     setNotice('PDF print popup opened! Save the PDF and drag it into Stirling PDF.');
     setTimeout(() => setNotice(''), 6000);
   };
@@ -247,7 +292,7 @@ export default function PDFEditorStudioPage() {
 
   return (
     <div className="flex flex-col h-screen overflow-hidden bg-slate-950 text-slate-100">
-      {/* Toolbar */}
+      {/* Main Header Toolbar */}
       <header className="h-14 px-5 bg-slate-900 border-b border-slate-800 flex items-center justify-between z-30 shrink-0">
         <div className="flex items-center space-x-3">
           <a href="/" className="flex items-center space-x-2 text-slate-300 hover:text-white">
@@ -271,18 +316,20 @@ export default function PDFEditorStudioPage() {
           </button>
         </div>
 
+        {/* Right Toolbar Actions */}
         <div className="flex items-center space-x-3">
           <select value={themeId} onChange={(e) => setThemeId(e.target.value as ThemeId)} className="bg-slate-800 border border-slate-700 text-xs text-slate-200 px-3 py-1.5 rounded-lg">
             {Object.values(THEMES).map((t) => (<option key={t.id} value={t.id}>{t.name}</option>))}
           </select>
+
           <div className="flex items-center space-x-1 bg-slate-800 border border-slate-700 rounded-lg px-2 py-1">
             <button onClick={() => setZoom((z) => Math.max(40, z - 10))} className="text-slate-400 hover:text-white p-0.5"><ZoomOut className="w-3.5 h-3.5" /></button>
             <span className="text-xs font-mono text-slate-300 w-10 text-center">{zoom}%</span>
             <button onClick={() => setZoom((z) => Math.min(150, z + 10))} className="text-slate-400 hover:text-white p-0.5"><ZoomIn className="w-3.5 h-3.5" /></button>
           </div>
 
-          <button onClick={handleOpenStirlingPDF} className="flex items-center space-x-1.5 px-3 py-1.5 bg-violet-700 hover:bg-violet-600 text-white rounded-lg text-xs font-bold border border-violet-600 transition-all" title="Open Stirling-PDF for advanced editing">
-            <ExternalLink className="w-3.5 h-3.5" /><span>Stirling PDF</span>
+          <button onClick={handleOpenStirlingPDFUI} className="flex items-center space-x-1.5 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-violet-300 rounded-lg text-xs font-semibold border border-slate-700" title="Open Stirling PDF Web Interface">
+            <ExternalLink className="w-3.5 h-3.5" /><span>Stirling UI</span>
           </button>
 
           <button onClick={handlePrintPDF} className="flex items-center space-x-2 px-4 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-bold shadow-md transition-all">
@@ -291,14 +338,56 @@ export default function PDFEditorStudioPage() {
         </div>
       </header>
 
-      {notice && (
-        <div className="bg-blue-600 text-white text-xs px-4 py-2 flex items-center justify-center font-medium shadow-md z-40 shrink-0">{notice}</div>
-      )}
+      {/* Secondary Stirling-PDF Direct API Bar */}
+      <div className="h-10 px-5 bg-slate-900/90 border-b border-slate-800 flex items-center space-x-3 text-xs text-slate-300 shrink-0">
+        <span className="flex items-center space-x-1 font-bold text-violet-400 text-[11px] uppercase tracking-wider">
+          <Zap className="w-3.5 h-3.5 text-violet-400" />
+          <span>Stirling API Tools:</span>
+        </span>
 
-      {/* Tip */}
-      <div className="bg-slate-900/80 border-b border-slate-800 px-5 py-2 text-[11px] text-slate-400 shrink-0">
-        <strong className="text-slate-200">How to edit:</strong> Click any text to edit it directly • Use <strong className="text-emerald-400">Push ↓</strong> / <strong className="text-amber-400">Pull ↑</strong> to move content between pages • <strong className="text-blue-400">Page Break</strong> forces a new page • <span className="text-red-400">Red dashed lines</span> = page boundaries • Click <strong className="text-emerald-400">Print / Save PDF</strong> to see exact print preview and save • Use <strong className="text-violet-400">Stirling PDF</strong> for advanced editing of the final PDF file
+        <button
+          onClick={() => handleStirlingApiAction('rotate-pdf', { angle: '90' })}
+          disabled={isExporting}
+          className="flex items-center space-x-1 px-2.5 py-1 bg-violet-950/60 hover:bg-violet-900/80 text-violet-200 border border-violet-800/60 rounded text-[11px] font-medium transition-colors disabled:opacity-50"
+          title="Rotate PDF 90° Clockwise via Stirling-PDF API"
+        >
+          <RotateCw className="w-3 h-3 text-violet-400" />
+          <span>Rotate 90°</span>
+        </button>
+
+        <button
+          onClick={() => {
+            const order = prompt('Enter page numbers order (e.g. 2,1,3):');
+            if (order) handleStirlingApiAction('rearrange-pages', { pageOrder: order });
+          }}
+          disabled={isExporting}
+          className="flex items-center space-x-1 px-2.5 py-1 bg-violet-950/60 hover:bg-violet-900/80 text-violet-200 border border-violet-800/60 rounded text-[11px] font-medium transition-colors disabled:opacity-50"
+          title="Reorder pages via Stirling-PDF API"
+        >
+          <Layers className="w-3 h-3 text-violet-400" />
+          <span>Reorder Pages</span>
+        </button>
+
+        <button
+          onClick={() => {
+            const pages = prompt('Enter page numbers to remove (e.g. 2 or 1,3):');
+            if (pages) handleStirlingApiAction('remove-pages', { pageNumbers: pages });
+          }}
+          disabled={isExporting}
+          className="flex items-center space-x-1 px-2.5 py-1 bg-violet-950/60 hover:bg-violet-900/80 text-violet-200 border border-violet-800/60 rounded text-[11px] font-medium transition-colors disabled:opacity-50"
+          title="Remove pages via Stirling-PDF API"
+        >
+          <Trash2 className="w-3 h-3 text-violet-400" />
+          <span>Remove Pages</span>
+        </button>
       </div>
+
+      {notice && (
+        <div className="bg-blue-600 text-white text-xs px-4 py-2 flex items-center justify-center font-medium shadow-md z-40 shrink-0">
+          {isExporting && <Loader2 className="w-3.5 h-3.5 animate-spin mr-2" />}
+          {notice}
+        </div>
+      )}
 
       {/* Editor */}
       <main className="flex-1 overflow-auto bg-slate-950 py-8">
