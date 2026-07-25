@@ -135,7 +135,7 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({
               lineHeight: theme.styles.lineHeight,
               backgroundColor: theme.styles.backgroundColor,
               color: theme.styles.textColor,
-              padding: '32px 40px 40px 40px',
+              padding: '40px',
               boxSizing: 'border-box',
               boxShadow: theme.styles.shadow,
             }}
@@ -268,9 +268,9 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({
                 font-size: 2.1em;
                 font-weight: 800;
                 letter-spacing: -0.02em;
-                margin-top: 1.8em;
-                margin-bottom: 0.9em;
-                padding-bottom: 0.6em;
+                margin-top: 1.2em;
+                margin-bottom: 0.6em;
+                padding-bottom: 0.4em;
                 border-bottom: 2px solid ${theme.styles.borderColor};
                 line-height: 1.35;
                 word-break: break-word;
@@ -282,9 +282,9 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({
                 font-size: 1.5em;
                 font-weight: 700;
                 letter-spacing: -0.01em;
-                margin-top: 1.6em;
-                margin-bottom: 0.8em;
-                padding-bottom: 0.5em;
+                margin-top: 1.1em;
+                margin-bottom: 0.5em;
+                padding-bottom: 0.35em;
                 border-bottom: 1px solid ${theme.styles.borderColor};
                 line-height: 1.35;
                 word-break: break-word;
@@ -295,14 +295,29 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({
                 color: ${theme.styles.headingColor} !important;
                 font-size: 1.25em;
                 font-weight: 600;
-                margin-top: 1.4em;
-                margin-bottom: 0.6em;
+                margin-top: 0.9em;
+                margin-bottom: 0.4em;
                 line-height: 1.35;
                 word-break: break-word;
               }
+              .document-render-content h4 {
+                font-family: ${theme.styles.headingFontFamily || theme.styles.fontFamily};
+                color: ${theme.styles.headingColor} !important;
+                font-size: 1.1em;
+                font-weight: 600;
+                margin-top: 0.8em;
+                margin-bottom: 0.35em;
+                line-height: 1.35;
+              }
+              .document-render-content hr + h1,
+              .document-render-content hr + h2,
+              .document-render-content hr + h3,
+              .document-render-content hr + h4 {
+                margin-top: 0.4em !important;
+              }
               .document-render-content p {
                 color: ${theme.styles.textColor} !important;
-                margin-bottom: 1.2em;
+                margin-bottom: 1em;
                 line-height: ${theme.styles.lineHeight};
                 word-break: break-word;
                 overflow-wrap: break-word;
@@ -310,12 +325,12 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({
               .document-render-content ul,
               .document-render-content ol {
                 color: ${theme.styles.textColor} !important;
-                margin-bottom: 1.25em;
+                margin-bottom: 1em;
                 padding-left: 1.5em;
               }
               .document-render-content li {
                 color: ${theme.styles.textColor} !important;
-                margin-bottom: 0.4em;
+                margin-bottom: 0.3em;
                 line-height: 1.65;
                 word-break: break-word;
               }
@@ -331,38 +346,44 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({
                 background-color: ${theme.styles.codeBg};
                 color: ${theme.styles.codeTextColor} !important;
                 padding: 0.2em 0.4em;
-                border-radius: 6px;
+                border-radius: 5px;
                 font-size: 0.88em;
                 border: 1px solid ${theme.styles.borderColor};
-                word-break: break-word;
               }
               .document-render-content pre {
+                font-family: ${theme.styles.codeFontFamily || 'monospace'};
                 background-color: ${theme.styles.codeBg};
                 border: 1px solid ${theme.styles.borderColor};
                 border-radius: 10px;
-                padding: 1.25em;
-                margin: 1.5em 0;
-                white-space: pre-wrap !important;
-                word-break: break-word !important;
-                word-wrap: break-word !important;
+                padding: 1em 1.25em;
+                margin: 1.2em 0;
+                white-space: pre !important;
+                word-break: normal !important;
+                word-wrap: normal !important;
+                font-size: 0.84em;
+                line-height: 1.38;
                 overflow-x: auto;
                 max-width: 100%;
                 box-shadow: 0 4px 12px rgba(0,0,0,0.03);
               }
               .document-render-content pre code {
+                font-family: inherit;
                 background: none;
                 border: none;
                 padding: 0;
                 color: ${theme.styles.codeTextColor} !important;
-                white-space: pre-wrap !important;
-                word-break: break-word !important;
+                white-space: pre !important;
+                word-break: normal !important;
+                word-wrap: normal !important;
+                font-size: inherit;
+                line-height: inherit;
               }
               .document-render-content blockquote {
                 background-color: ${theme.styles.blockquoteBg};
                 border-left: 4px solid ${theme.styles.blockquoteBorderColor};
                 color: ${theme.styles.textColor} !important;
-                margin: 1.5em 0;
-                padding: 1em 1.25em;
+                margin: 1.2em 0;
+                padding: 0.8em 1.1em;
                 border-radius: 0 10px 10px 0;
                 font-style: italic;
                 word-break: break-word;
@@ -372,7 +393,7 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({
                 max-width: 100% !important;
                 border-collapse: separate !important;
                 border-spacing: 0 !important;
-                margin: 1.8em 0 !important;
+                margin: 1.4em 0 !important;
                 border-radius: 10px !important;
                 border: 1px solid ${theme.styles.borderColor} !important;
                 overflow: hidden !important;
@@ -386,14 +407,14 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({
                 font-size: 0.85em;
                 text-transform: uppercase;
                 letter-spacing: 0.04em;
-                padding: 0.9em 1.2em;
+                padding: 0.8em 1em;
                 border-bottom: 2px solid ${theme.styles.borderColor};
                 border-right: 1px solid ${theme.styles.borderColor};
                 text-align: left;
               }
               .document-render-content table td {
                 color: ${theme.styles.textColor} !important;
-                padding: 0.8em 1.1em;
+                padding: 0.7em 1em;
                 border-bottom: 1px solid ${theme.styles.borderColor};
                 border-right: 1px solid ${theme.styles.borderColor};
                 word-break: break-word !important;
@@ -414,7 +435,7 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({
                 border: none;
                 height: 1px;
                 background-color: ${theme.styles.borderColor};
-                margin: 2.2em 0;
+                margin: 1.2em 0;
               }
               .document-render-content img {
                 max-width: 100% !important;

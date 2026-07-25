@@ -67,7 +67,7 @@ export function buildStandaloneHtml(options: HTMLExportOptions): string {
       background-color: var(--bg-color);
       color: var(--text-color);
       margin: 0;
-      padding: 28px 40px 40px 40px;
+      padding: 40px;
       max-width: 900px;
       margin-left: auto;
       margin-right: auto;
@@ -82,21 +82,19 @@ export function buildStandaloneHtml(options: HTMLExportOptions): string {
     h1, h2, h3, h4, h5, h6 {
       font-family: var(--font-heading);
       color: var(--heading-color);
-      margin-top: 1.8em;
-      margin-bottom: 0.8em;
       font-weight: 700;
       line-height: 1.25;
       word-break: break-word;
     }
 
-    strong, b {
-      color: var(--heading-color);
-      font-weight: 700;
-    }
+    h1 { font-size: 2.1em; font-weight: 800; border-bottom: 2px solid var(--border-color); padding-bottom: 0.4em; margin-top: 1.2em; margin-bottom: 0.6em; }
+    h2 { font-size: 1.5em; font-weight: 700; border-bottom: 1px solid var(--border-color); padding-bottom: 0.35em; margin-top: 1.1em; margin-bottom: 0.5em; }
+    h3 { font-size: 1.25em; font-weight: 600; margin-top: 0.9em; margin-bottom: 0.4em; }
+    h4 { font-size: 1.1em; font-weight: 600; margin-top: 0.8em; margin-bottom: 0.35em; }
 
-    h1 { font-size: 2.1em; font-weight: 800; border-bottom: 2px solid var(--border-color); padding-bottom: 0.4em; }
-    h2 { font-size: 1.5em; font-weight: 700; border-bottom: 1px solid var(--border-color); padding-bottom: 0.3em; }
-    h3 { font-size: 1.25em; font-weight: 600; }
+    hr + h1, hr + h2, hr + h3, hr + h4 {
+      margin-top: 0.4em !important;
+    }
 
     p { margin-bottom: 1.2em; word-break: break-word; line-height: var(--line-height); }
 
@@ -204,7 +202,7 @@ export function buildStandaloneHtml(options: HTMLExportOptions): string {
       border: none;
       height: 1px;
       background-color: var(--border-color);
-      margin: 2.2em 0;
+      margin: 1.2em 0;
     }
 
     img {
