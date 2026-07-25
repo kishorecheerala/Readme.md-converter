@@ -16,6 +16,7 @@ import {
   Layers,
   Link as LinkIcon,
   List,
+  Scissors,
   Sparkles,
   Table as TableIcon,
   Trash2,
@@ -203,6 +204,17 @@ export const EditorPane: React.FC<EditorPaneProps> = ({
           <button onClick={() => handleInsertFormat('- ')} className="p-1 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-800 rounded-sm" title="Bullet List"><List className="w-3.5 h-3.5" /></button>
           <button onClick={() => handleInsertFormat('[Link Title](https://', ')')} className="p-1 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-800 rounded-sm" title="Link"><LinkIcon className="w-3.5 h-3.5" /></button>
           <button onClick={() => handleInsertFormat('\n| Col 1 | Col 2 |\n| --- | --- |\n| Val 1 | Val 2 |\n')} className="p-1 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-800 rounded-sm" title="Table"><TableIcon className="w-3.5 h-3.5" /></button>
+
+          {/* Quick Page Break Insertion Button */}
+          <button
+            onClick={() => handleInsertFormat('\n\n<!-- pagebreak -->\n\n')}
+            className="flex items-center space-x-1 px-2 py-0.5 bg-blue-50 dark:bg-blue-950 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900 border border-blue-200 dark:border-blue-800 rounded-md font-semibold text-[11px]"
+            title="Insert Page Break"
+          >
+            <Scissors className="w-3 h-3" />
+            <span>+ Page Break</span>
+          </button>
+
           <button onClick={() => handleInsertFormat('\n```mermaid\nflowchart TD\n    A[Start] --> B[End]\n```\n')} className="p-1 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-800 rounded-sm font-mono text-[10px] bg-slate-200 dark:bg-slate-800 px-1.5 py-0.5" title="Insert Mermaid Diagram">+Mermaid</button>
           <button onClick={() => handleInsertFormat('\n$$ \\int_{0}^{\\infty} x^2 dx $$\n')} className="p-1 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-800 rounded-sm font-mono text-[10px] bg-slate-200 dark:bg-slate-800 px-1.5 py-0.5" title="Insert KaTeX Math">+Math</button>
         </div>
@@ -241,7 +253,7 @@ export const EditorPane: React.FC<EditorPaneProps> = ({
             id="md-editor-textarea"
             value={value}
             onChange={(e) => onChange(e.target.value)}
-            placeholder="Paste or write your Markdown content here... (Or click 'Upload .md File' above)"
+            placeholder="Paste or write your Markdown content here... (Or click 'Upload File' above)"
             className="w-full h-full p-4 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 font-mono text-sm leading-relaxed resize-none outline-hidden border-none focus:ring-0 selection:bg-blue-500/30 transition-colors"
           />
         )}

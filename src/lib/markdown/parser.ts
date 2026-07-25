@@ -1,13 +1,18 @@
 import { DocumentStats, SectionItem, TOCItem } from '@/types';
 
 /**
- * Converts Markdown string into styled HTML with syntax highlighting & KaTeX math support.
- * Uses dynamic ESM imports for seamless compatibility with Next.js App Router and Jest.
+ * Converts Markdown string into styled HTML with syntax highlighting, KaTeX math support, and page breaks.
  */
 export async function parseMarkdownToHtml(markdown: string): Promise<string> {
   if (!markdown) return '';
 
   try {
+    // Replace custom pagebreak tags before markdown parsing
+    let processedMarkdown = markdown
+      .replace(/<!--\s*pagebreak\s*-->/gi, '\n\n<div class="html-page-break"></div>\n\n')
+      .replace(/\\pagebreak/gi, '\n\n<div class="html-page-break"></div>\n\n')
+      .replace(/<pagebreak\s*\/?>/gi, '\n\n<div class="html-page-break"></div>\n\n');
+
     const { unified } = await import('unified');
     const { default: parse } = await import('remark-parse');
     const { default: gfm } = await import('remark-gfm');
@@ -21,11 +26,11 @@ export async function parseMarkdownToHtml(markdown: string): Promise<string> {
       .use(parse)
       .use(gfm)
       .use(math)
-      .use(remarkRehype)
+      .use(remarkRehype, { allowDangerousHtml: true })
       .use(rehypeKatex)
       .use(highlight, { ignoreMissing: true } as any)
-      .use(stringify)
-      .process(markdown);
+      .use(stringify, { allowDangerousHtml: true })
+      .process(processedMarkdown);
 
     let html = String(file);
 

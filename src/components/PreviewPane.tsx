@@ -10,7 +10,7 @@ import {
   ThemeId,
   WatermarkConfig
 } from '@/types';
-import { Eye, FileText, Layout, RotateCcw, ZoomIn, ZoomOut } from 'lucide-react';
+import { Eye, RotateCcw, ZoomIn, ZoomOut } from 'lucide-react';
 import React, { useEffect, useRef, useState } from 'react';
 
 interface PreviewPaneProps {
@@ -210,13 +210,13 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({
               </div>
             )}
 
-            {/* Document Content Rendered HTML (explicitly without dark:prose-invert to prevent white-on-white text) */}
+            {/* Document Content Rendered HTML */}
             <div
               className="prose max-w-none break-words document-render-content"
               dangerouslySetInnerHTML={{ __html: renderedHtml }}
             />
 
-            {/* Premium Document Styling Engine */}
+            {/* Premium Document & Page Break Styling Engine */}
             <style jsx global>{`
               #pdf-render-target * {
                 box-sizing: border-box;
@@ -230,6 +230,20 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({
               .document-render-content b {
                 color: ${theme.styles.headingColor || theme.styles.textColor} !important;
                 font-weight: 700;
+              }
+              .document-render-content h1,
+              .document-render-content h2,
+              .document-render-content h3,
+              .document-render-content h4,
+              .document-render-content p,
+              .document-render-content li,
+              .document-render-content tr,
+              .document-render-content pre,
+              .document-render-content blockquote,
+              .document-render-content img,
+              .document-render-content .mermaid {
+                break-inside: avoid !important;
+                page-break-inside: avoid !important;
               }
               .document-render-content h1 {
                 font-family: ${theme.styles.headingFontFamily || theme.styles.fontFamily};
@@ -396,6 +410,28 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({
                 background-color: ${theme.styles.codeBg};
                 border-radius: 10px;
                 border: 1px solid ${theme.styles.borderColor};
+              }
+              .document-render-content .html-page-break {
+                page-break-before: always !important;
+                break-before: page !important;
+                height: 24px;
+                border-top: 2px dashed #2563eb;
+                margin: 32px 0;
+                position: relative;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+              }
+              .document-render-content .html-page-break::after {
+                content: '--- PAGE BREAK ---';
+                font-family: monospace;
+                font-size: 10px;
+                font-weight: bold;
+                color: #2563eb;
+                background: #eff6ff;
+                padding: 2px 8px;
+                border-radius: 4px;
+                border: 1px solid #bfdbfe;
               }
               ${customCss}
             `}</style>
